@@ -32,17 +32,17 @@ router.get('/searchGoogle', function(req, res, next) {
   });
 });
 router.post('/downloadImages', function(req, res, next) {
-  console.log(res)
+  // console.log(res)
   var myPromiseLoop = promiseLoop(loopingPromise);
   images = JSON.parse(req.body.imagesURL);
   searchKeyword = req.body.searchKeyword
   downloadPath = req.body.downloadPath.replace(/\\/gi,'/');
-  console.log(downloadPath)
-  console.log(downloadPath.substr(downloadPath.length-1,1))
+  // console.log(downloadPath)
+  // console.log(downloadPath.substr(downloadPath.length-1,1))
   if (downloadPath.substr(downloadPath.length-1,1) !== '/') {
     downloadPath += '/';
   }
-  console.log(downloadPath);
+  // console.log(downloadPath);
   myPromiseLoop(0);
   res.end();
 });
@@ -50,17 +50,18 @@ module.exports = router;
 
 
 var loopingPromise = function(value) {
-  console.log('loopPromiseStart'+value)
+  // console.log('loopPromiseStart'+images.length)
   return new Promise(function(resolve, reject) {
+      console.log(value)
       if (value < images.length) {
           var currentImage = images[value];
-          console.log('test1')
+          // console.log('test1')
           var ImageFormat = currentImage.type !== undefined ? currentImage.type : (currentImage.format !== undefined ? currentImage.format : 'error');
-          console.log('test2')
+          // console.log('test2')
           var imageExtension = (ImageFormat.indexOf('png') !== -1) ? 'png' : (ImageFormat.indexOf('jpeg') !== -1 ? 'jpeg' : (ImageFormat.indexOf('jpg') !== -1 ? 'jpg' : 'error'));
-          console.log('test3')
+          // console.log('test3')
           if((imageExtension !== 'error') && (ImageFormat !== 'error')){
-              console.log(currentImage.url)
+              // currentImage.url = 'http://blog.rightbrain.co.kr/CMS1/wp-content/uploads/2015/12/1955-Mercedes-Benz-300SL.jpg'
               const options = {
                   url: currentImage.url,
                   dest: `${downloadPath}${searchKeyword}${parseInt(value+1)}.${imageExtension}`
@@ -70,12 +71,12 @@ var loopingPromise = function(value) {
                   console.log('download succese')
                   resolve(++value);
               }).catch((err) => {
-                  throw err
-                  reject();
+                  console.log('download error',err)
+                  resolve(++value);
               })
           }else{
               console.log('extension error')
-              console.log(ImageFormat)
+              // console.log(ImageFormat)
               resolve(++value);
           }
       } else {
