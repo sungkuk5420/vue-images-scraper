@@ -14,7 +14,7 @@
     <button v-on:click="reDraw">redrawVueMasonry</button>
     <div v-masonry transition-duration="1s" item-selector=".item" class="masonry-container">
       <div v-masonry-tile class="item" v-bind:key="index" v-for="(item, index) in imagesBlocks">
-        <img v-bind:src="item.thumb_url" >
+        <img v-bind:src="item.thumb_url || item.thumb" >
       </div>
     </div>
   </div>
