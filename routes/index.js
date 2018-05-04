@@ -20,7 +20,7 @@ router.get('/searchGoogle', function(req, res, next) {
     num: req.query.count,
     detail: true,
     nightmare: {
-        show: true
+        show: false
     }
   })
   .then(function (searchImages) {
