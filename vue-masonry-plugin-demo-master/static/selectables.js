@@ -20,6 +20,8 @@ function Selectables(opts) {
       onSelect: null, // event fired on every item when selected.
       onDeselect: null         // event fired on every item when selected.
   };
+  var activeObjCount = 0;
+  var activeObj = undefined;
   var extend = function extend(a, b) {
       for (var prop in b) {
           a[prop] = b[prop];
@@ -53,6 +55,7 @@ function Selectables(opts) {
       }
       this.items = document.querySelectorAll(this.options.zone + ' ' + this.options.elements);
       this.disable();
+      this.zone.removeEventListener('mousedown', self.rectOpen);
       this.zone.addEventListener('mousedown', self.rectOpen);
       this.on = true;
       return this;
@@ -64,7 +67,7 @@ function Selectables(opts) {
   };
   var offset = function (el) {
       var r = el.getBoundingClientRect();
-      return {top: r.top + document.body.scrollTop, left: r.left + document.body.scrollLeft}
+      return {top: r.top + document.scrollingElement.scrollTop, left: r.left + document.scrollingElement.scrollLeft}
   };
   this.suspend = function (e) {
       e.preventDefault();
@@ -77,12 +80,20 @@ function Selectables(opts) {
           return;
       }
       document.body.classList.add('s-noselect');
-      self.foreach(self.items, function (el) {
-          el.addEventListener('click', self.suspend, true); //skip any clicks
-          if (!e[self.options.moreUsing]) {
-              el.classList.remove(self.options.selectedClass);
-          }
-      });
+      var activeObjs = document.getElementsByClassName(self.options.selectedClass);
+      activeObjCount = activeObjs.length;
+      if(activeObjCount == 1){
+        activeObj = activeObjs[0];
+      }else{
+        activeObj = undefined;
+      }
+      // self.foreach(self.items, function (el) {
+      //     el.addEventListener('click', self.suspend, true); //skip any clicks
+      //     if (!e[self.options.moreUsing]) {
+      //       self.options.onDeselect && self.options.onDeselect(el);
+      //       el.classList.remove(self.options.selectedClass);
+      //     }
+      // });
       self.ipos = [e.pageX, e.pageY];
       if (!rb()) {
           var gh = document.createElement('div');
@@ -91,7 +102,9 @@ function Selectables(opts) {
           gh.style.top = e.pageY + 'px';
           document.body.appendChild(gh);
       }
+      document.body.removeEventListener('mousemove', self.rectDraw);
       document.body.addEventListener('mousemove', self.rectDraw);
+      window.removeEventListener('mouseup', self.select);
       window.addEventListener('mouseup', self.select);
   };
   var rb = function () {
@@ -111,14 +124,22 @@ function Selectables(opts) {
       document.body.removeEventListener('mousemove', self.rectDraw);
       window.removeEventListener('mouseup', self.select);
       var s = self.options.selectedClass;
+      var crossObjCount = 0;
+      self.foreach(self.items, function (el) {
+          if (cross(a, el) === true) {
+              crossObjCount++;
+          }
+      });
       self.foreach(self.items, function (el) {
           if (cross(a, el) === true) {
               if (el.classList.contains(s)) {
                   el.classList.remove(s);
                   self.options.onDeselect && self.options.onDeselect(el);
               } else {
-                  el.classList.add(s);
-                  self.options.onSelect && self.options.onSelect(el);
+                  if(!((el == activeObj) && (activeObjCount == 1) && (crossObjCount == 1))){
+                    el.classList.add(s);
+                    self.options.onSelect && self.options.onSelect(el);
+                  }
               }
           }
           setTimeout(function () {
