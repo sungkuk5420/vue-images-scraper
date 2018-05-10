@@ -9,18 +9,21 @@
     <h2 ref="downloadPathLabel">Images Download Path</h2>
     <input type="text" :value="downloadPath" v-on:input="changeDownloadPath($event.target.value)"/>
     <button @click="downloadImages()">download</button>
-    <!-- <input type="file" allowdirs webkitdirectory directory id="selectFolder"/> -->
     <br><br>
     <button v-on:click="reDraw">redrawVueMasonry</button>
-    <div v-masonry transition-duration="1s" item-selector=".item" class="masonry-container">
-      <div v-masonry-tile class="item" v-bind:key="index" v-for="(item, index) in imagesBlocks">
-        <img v-bind:src="item.thumb_url || item.thumb" >
+    <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
+      <div v-masonry-tile class="imageDiv" v-bind:key="index" v-for="(item, index) in imagesBlocks" >
+        <a style="display: flex;" class="active">
+          <img v-bind:src="item.thumb_url || item.thumb" class="image">
+          <input type="checkbox" class="checkbox" checked="checked"/>
+        </a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+var timer;
 import Vue from 'vue'
 import { M } from '../store/types'
 import { mapGetters } from 'vuex'
@@ -66,23 +69,12 @@ export default {
   },
   mounted: function(){
     var thisObj = this;
-    this.$redrawVueMasonry();
-    // var fileToRead = document.getElementById("selectFolder");
-    // fileToRead.addEventListener("change", function(event) {
-    //   console.log(thisObj.$refs.downloadPathLabel)
-    //   console.log(fileToRead.files[0])
-    //   thisObj.$refs.downloadPathLabel.textContent = `Images Download Path = "${fileToRead.value}"`;
-    // }, false);
   },
   methods: {
     reDraw () {
       this.$redrawVueMasonry({
-        horizontalOrder: true
+        horizontalOrder: false
       });
-      // let template = {
-      //       title: 'the last block'
-      //     }
-      // this.blocks.push(template)
     },
     changeSearchStr (str) {
       this.searchStr = str
@@ -101,12 +93,36 @@ export default {
       console.log('click!')
       this.$store.dispatch(M.DOWNLOAD_IMAGES)
     }
+  },
+  updated(){
+    console.log('update')
+    var thisObj = this;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+      console.log('call')
+      thisObj.reDraw();
+      new Selectables({
+        elements: 'a',
+        selectedClass: 'active',
+        moreUsing: 'shiftKey',
+        zone: '#masonry-container',
+        onSelect: function (el) {
+          el.querySelector('input').setAttribute('checked', 'checked');
+        },
+        onDeselect: function (el) {
+          el.querySelector('input').removeAttribute('checked');
+        }
+      });
+    }, 1000);
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
+
 h1, h2 {
   font-weight: normal;
 }
@@ -124,15 +140,40 @@ li {
 a {
   color: #42b983;
 }
-.item {
-  border: 1px solid #ac0;
+.imageDiv {
+  border: 2px solid #ac0;
   width:200px;
+  display: table;
+  border-collapse:collapse;
+  position: relative;
+  cursor: pointer;
+  .image{
+    width:100%;
+    height: 100%;
+    opacity: 0.5;
+  }
+
+  .checkbox{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+  }
 }
-.item img{
-  width:100%;
-}
+
 .masonry-container {
-    width: 55%;
+    min-width: 850px;
+    width:85%;
     margin: 0 auto;
+}
+
+.masonry-container .active .image{
+  opacity: 1;
+}
+
+#s-rectBox {
+    position: absolute;
+    z-index: 1090;
+    border:2px dashed #cbd3e3;
+    border-radius:0;
 }
 </style>
