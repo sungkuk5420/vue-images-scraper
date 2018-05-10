@@ -103,19 +103,21 @@ export default {
     timer = setTimeout(function() {
       console.log('call')
       thisObj.reDraw();
-      new Selectables({
-        elements: 'a',
-        selectedClass: 'active',
-        moreUsing: 'shiftKey',
-        zone: '#masonry-container',
-        onSelect: function (el) {
-          el.querySelector('input').setAttribute('checked', 'checked');
-        },
-        onDeselect: function (el) {
-          el.querySelector('input').removeAttribute('checked');
-        }
-      });
-    }, 1000);
+      if(document.getElementsByClassName("imageDiv").length != 0){
+        new Selectables({
+          elements: 'a',
+          selectedClass: 'active',
+          moreUsing: 'shiftKey',
+          zone: '#masonry-container',
+          onSelect: function (el) {
+            el.querySelector('input').setAttribute('checked', 'checked');
+          },
+          onDeselect: function (el) {
+            el.querySelector('input').removeAttribute('checked');
+          }
+        });
+      }
+    }, 3000);
   }
 }
 </script>
