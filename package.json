@@ -15,8 +15,10 @@
     "image-downloader": "^3.3.0",
     "images-scraper": "^2.0.11",
     "morgan": "~1.9.0",
+    "node-mkdir": "^1.0.0",
     "promise-loop": "^1.0.1",
     "raw-body": "^2.3.2",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "zip-dir": "^1.0.2"
   }
 }

@@ -4,8 +4,9 @@ var Scraper = require ('images-scraper')
   , download = require('image-downloader')
   , promiseLoop = require('promise-loop')
   , google = new Scraper.Google()
-  , bing = new Scraper.Bing();
-
+  , bing = new Scraper.Bing()
+  , mkdir = require('node-mkdir')
+  , zipdir = require('zip-dir');
 var downloadPath = '';
 var images = [];
 var searchKeyword = '';
@@ -36,14 +37,17 @@ router.post('/downloadImages', function(req, res, next) {
   var myPromiseLoop = promiseLoop(loopingPromise);
   images = JSON.parse(req.body.imagesURL);
   searchKeyword = req.body.searchKeyword
-  downloadPath = req.body.downloadPath.replace(/\\/gi,'/');
-  // console.log(downloadPath)
-  // console.log(downloadPath.substr(downloadPath.length-1,1))
+  downloadPath = __dirname.replace(/\\/gi,"/").replace("routes","")+'downloadImages/'
   if (downloadPath.substr(downloadPath.length-1,1) !== '/') {
     downloadPath += '/';
+  }  
+  async function run() {   
+    let path2 = await mkdir('downloadImages/'+searchKeyword+'/', (__dirname.replace(/\\/gi,"/").replace("/routes","")));
+    myPromiseLoop(0);
   }
-  // console.log(downloadPath);
-  myPromiseLoop(0);
+   
+  run();
+
   res.end();
 });
 module.exports = router;
@@ -55,16 +59,13 @@ var loopingPromise = function(value) {
       console.log(value)
       if (value < images.length) {
           var currentImage = images[value];
-          // console.log('test1')
           var ImageFormat = currentImage.type !== undefined ? currentImage.type : (currentImage.format !== undefined ? currentImage.format : 'error');
-          // console.log('test2')
           var imageExtension = (ImageFormat.indexOf('png') !== -1) ? 'png' : (ImageFormat.indexOf('jpeg') !== -1 ? 'jpeg' : (ImageFormat.indexOf('jpg') !== -1 ? 'jpg' : 'error'));
-          // console.log('test3')
           if((imageExtension !== 'error') && (ImageFormat !== 'error')){
               // currentImage.url = 'http://blog.rightbrain.co.kr/CMS1/wp-content/uploads/2015/12/1955-Mercedes-Benz-300SL.jpg'
               const options = {
                   url: currentImage.url,
-                  dest: `${downloadPath}${searchKeyword}${parseInt(value+1)}.${imageExtension}`
+                  dest: `${downloadPath}${searchKeyword}/${searchKeyword}${parseInt(value+1)}.${imageExtension}`
               }
               download.image(options)
               .then(({ filename, image }) => {
@@ -80,7 +81,9 @@ var loopingPromise = function(value) {
               resolve(++value);
           }
       } else {
-          console.log('\trejecting');
+          zipdir(downloadPath+searchKeyword, { saveTo: downloadPath+searchKeyword+'.zip' }, function (err, buffer) {
+            console.log('zip file created!')
+          });
           reject(value < images.length);
       }
   });
@@ -95,3 +98,4 @@ var loopingPromise = function(value) {
 // }).catch(function(err) {
 //     console.log('err',err);
 // })
+
