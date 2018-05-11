@@ -1,13 +1,26 @@
 <template>
   <div id="app" class="hello">
+    <div style="display:inline-block;"><span style="display: inline-block; width:85px;">Id : </span><input type="text" :value="searchStr" v-on:input="changeSearchStr($event.target.value)"/><br>
+    <span style="display: inline-block; width:85px;">Password : </span><input type="password" :value="searchStr" v-on:input="changeSearchStr($event.target.value)"/><br></div>
+    <button @click="downloadImages()" style="display:inline-block;height: 42px; vertical-align: top;">login</button>
+    <select style="top: -10px; position: relative;">
+      <option value="product">product</option>
+      <option value="sandbox">sandbox</option>
+    </select>
     <h1>{{ msg }}</h1>
     <h2>Search images by keyoword</h2>
     <input type="text" :value="searchStr" v-on:input="changeSearchStr($event.target.value)"/>
-    <h2>Download count</h2>
-    <input type="text" :value="searchCount" v-on:input="changeSearchCount($event.target.value)"/>
+    <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="top: 0px; position: relative;">
+      <option value="10">10</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="200">200</option>
+      <option value="300">300</option>
+      <option value="400">400</option>
+    </select>
     <button @click="search()">Search</button>
-    <h2 ref="downloadPathLabel">Images Download Path</h2>
-    <input type="text" :value="downloadPath" v-on:input="changeDownloadPath($event.target.value)"/>
+    <!-- <input type="text" :value="downloadPath" v-on:input="changeDownloadPath($event.target.value)"/> -->
+
     <button @click="downloadImages()">download</button>
     <br><br>
     <button v-on:click="reDraw">redrawVueMasonry</button>
@@ -143,7 +156,7 @@ export default {
           // }
         }
       }
-    }, 2000);
+    }, 3000);
   }
 }
 </script>
