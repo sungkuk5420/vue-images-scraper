@@ -65,7 +65,7 @@ var loopingPromise = function(value) {
               // currentImage.url = 'http://blog.rightbrain.co.kr/CMS1/wp-content/uploads/2015/12/1955-Mercedes-Benz-300SL.jpg'
               const options = {
                   url: currentImage.url,
-                  dest: `${downloadPath}${searchKeyword}/${searchKeyword}${parseInt(value+1)}.${imageExtension}`
+                  dest: `${downloadPath}${searchKeyword}/${parseInt(value+1)}.${imageExtension}`
               }
               download.image(options)
               .then(({ filename, image }) => {
