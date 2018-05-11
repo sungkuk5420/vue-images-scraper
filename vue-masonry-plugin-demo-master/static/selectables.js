@@ -133,11 +133,11 @@ function Selectables(opts) {
       self.foreach(self.items, function (el) {
           if (cross(a, el) === true) {
               if (el.classList.contains(s)) {
-                  el.classList.remove(s);
+                  // el.classList.remove(s);
                   self.options.onDeselect && self.options.onDeselect(el);
               } else {
                   if(!((el == activeObj) && (activeObjCount == 1) && (crossObjCount == 1))){
-                    el.classList.add(s);
+                    // el.classList.add(s);
                     self.options.onSelect && self.options.onSelect(el);
                   }
               }

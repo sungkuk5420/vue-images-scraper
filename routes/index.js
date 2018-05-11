@@ -60,8 +60,8 @@ var loopingPromise = function(value) {
       if (value < images.length) {
           var currentImage = images[value];
           var ImageFormat = currentImage.type !== undefined ? currentImage.type : (currentImage.format !== undefined ? currentImage.format : 'error');
-          var imageExtension = (ImageFormat.indexOf('png') !== -1) ? 'png' : (ImageFormat.indexOf('jpeg') !== -1 ? 'jpeg' : (ImageFormat.indexOf('jpg') !== -1 ? 'jpg' : 'error'));
-          if((imageExtension !== 'error') && (ImageFormat !== 'error')){
+          var imageExtension = (ImageFormat.indexOf('png') !== -1) ? 'png' : (ImageFormat.indexOf('jpeg') !== -1 ? 'jpeg' : 'jpg');
+          if((imageExtension !== 'error') && (ImageFormat !== 'error') && (currentImage.checked === 'checked')){
               // currentImage.url = 'http://blog.rightbrain.co.kr/CMS1/wp-content/uploads/2015/12/1955-Mercedes-Benz-300SL.jpg'
               const options = {
                   url: currentImage.url,
@@ -70,13 +70,14 @@ var loopingPromise = function(value) {
               download.image(options)
               .then(({ filename, image }) => {
                   console.log('download succese')
+                  io.sockets.emit('Download Complete',value);
                   resolve(++value);
               }).catch((err) => {
                   console.log('download error',err)
                   resolve(++value);
               })
           }else{
-              console.log('extension error')
+              console.log('extension error : '+currentImage.type)
               // console.log(ImageFormat)
               resolve(++value);
           }

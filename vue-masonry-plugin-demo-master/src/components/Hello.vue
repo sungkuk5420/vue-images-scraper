@@ -12,14 +12,15 @@
     <br><br>
     <button v-on:click="reDraw">redrawVueMasonry</button>
     <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
-      <div v-masonry-tile class="imageDiv" v-bind:key="index" v-for="(item, index) in imagesBlocks" >
-        <a style="display: flex;" class="active">
+      <div v-masonry-tile class="imageDiv " v-bind:key="index" v-for="(item, index) in imagesBlocks" >
+        <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]">
           <img v-bind:src="item.thumb_url || item.thumb" class="image">
-          <input type="checkbox" class="checkbox" checked="checked"/>
+          <input type="checkbox" class="checkbox" :checked="item.checked"/>
         </a>
       </div>
     </div>
     <div class="layer" v-show="loadingIconFlag">
+      <div class="layerText">{{downloadAjaxText}}</div>
       <div class="spinner"></div>
     </div>
   </div>
@@ -33,7 +34,6 @@ import { mapGetters } from 'vuex'
 import {VueMasonryPlugin} from 'vue-masonry';
 
 Vue.use(VueMasonryPlugin)
-
 export default {
   name: 'hello',
   data () {
@@ -69,11 +69,13 @@ export default {
     ...mapGetters({
       imagesBlocks: 'getImagesBlocks',
       loadingIconFlag: 'getLoadingIconFlag',
-      showTabName: 'getShowTabName'
+      showTabName: 'getShowTabName',
+      downloadAjaxText: 'getDownloadAjaxText'
     })
   },
   mounted: function(){
     var thisObj = this;
+    window.lockToHideLayer = false;
   },
   methods: {
     reDraw () {
@@ -92,11 +94,14 @@ export default {
     },
     search () {
       console.log('click!')
+      window.lockToHideLayer = true
       this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       this.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
     },
     downloadImages () {
       console.log('click!')
+      window.lockToHideLayer = true
+      this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       this.$store.dispatch(M.DOWNLOAD_IMAGES)
     }
   },
@@ -110,33 +115,35 @@ export default {
       if(thisObj.loadingIconFlag){
         console.log('call')
         thisObj.reDraw();
-        if(thisObj.searchStr === thisObj.showTabName){
+        if(window.lockToHideLayer === false){
           new Selectables({
             elements: 'a',
             selectedClass: 'active',
             moreUsing: 'shiftKey',
             zone: '#masonry-container',
             onSelect: function (el) {
-              el.querySelector('input').setAttribute('checked', 'checked');
+              thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
+              // el.querySelector('input').setAttribute('checked', 'checked');
             },
             onDeselect: function (el) {
-              el.querySelector('input').removeAttribute('checked');
+              thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
+              // el.querySelector('input').removeAttribute('checked');
             }
           });
+          console.log('xxx')
           thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
-          var images = document.getElementsByClassName("imageDiv")
-          for(var i = 0, len = images.length; i < len ; i++){
-            var item = images[i]
-            var aTag = item.querySelector('a')
-            if(!aTag.classList.contains('active')){
-              aTag.classList.add('active')
-            }
-            item.querySelector('input').setAttribute('checked', 'checked')
-          }
-
+          // var images = document.getElementsByClassName("imageDiv")
+          // for(var i = 0, len = images.length; i < len ; i++){
+          //   var item = images[i]
+          //   var aTag = item.querySelector('a')
+          //   if(!aTag.classList.contains('active')){
+          //     aTag.classList.add('active')
+          //   }
+          //   item.querySelector('input').setAttribute('checked', 'checked')
+          // }
         }
       }
-    }, 500);
+    }, 2000);
   }
 }
 </script>
@@ -209,8 +216,19 @@ a {
     left: 0;
 }
 
+.layerText {
+     width: 100%;
+    height: 20px;
+    margin: auto;
+    top: -80px;
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    color: white;
+}
+
 .spinner {
-    margin: 50px;
     height: 28px;
     width: 28px;
     animation: rotate 0.8s infinite linear;
