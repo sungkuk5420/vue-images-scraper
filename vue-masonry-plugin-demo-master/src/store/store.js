@@ -6,7 +6,9 @@ const state = {
   searchCount: 10,
   downloadPath: '',
   imagesBlocks: [
-  ]
+  ],
+  loadingIconFlag: false,
+  showTabName: ''
 }
 
 const getters = {
@@ -21,6 +23,12 @@ const getters = {
   },
   getImagesBlocks () {
     return state.imagesBlocks
+  },
+  getLoadingIconFlag () {
+    return state.loadingIconFlag
+  },
+  getShowTabName () {
+    return state.showTabName
   }
 }
 
@@ -43,6 +51,7 @@ const actions = {
         console.log('action / SEARCH_IMAGES_FROM_GOOGLE / success')
         console.log('results= ', results)
         commit(M.SEARCH_IMAGES_FROM_GOOGLE, results)
+        commit(M.CHANGE_SHOW_TAB_NAME, thisObj.getters.getSearchStr)
       },
       (res) => {
         console.log('action / SEARCH_IMAGES_FROM_GOOGLE / error', res)
@@ -63,7 +72,13 @@ const actions = {
         console.log('action / DOWNLOAD_IMAGES / error', res)
       }
     )
-  }
+  },
+  [M.CHANGE_LOADING_ICON_FLAG] ({ commit }) {
+    commit(M.CHANGE_LOADING_ICON_FLAG)
+  },
+  [M.CHANGE_SHOW_TAB_NAME] ({ commit }, showTabName) {
+    commit(M.CHANGE_SHOW_TAB_NAME, showTabName)
+  },
 }
 
 const mutations = {
@@ -78,7 +93,15 @@ const mutations = {
   },
   [M.SEARCH_IMAGES_FROM_GOOGLE] (state, results) {
     state.imagesBlocks = results
+  },
+  [M.CHANGE_LOADING_ICON_FLAG] (state) {
+    state.loadingIconFlag = !state.loadingIconFlag
+  },
+  [M.CHANGE_SHOW_TAB_NAME] (state, showTabName) {
+    state.showTabName = showTabName
   }
+
+
 }
 
 export default {

@@ -19,6 +19,9 @@
         </a>
       </div>
     </div>
+    <div class="layer" v-show="loadingIconFlag">
+      <div class="spinner"></div>
+    </div>
   </div>
 </template>
 
@@ -64,7 +67,9 @@ export default {
       }
     },
     ...mapGetters({
-      imagesBlocks: 'getImagesBlocks'
+      imagesBlocks: 'getImagesBlocks',
+      loadingIconFlag: 'getLoadingIconFlag',
+      showTabName: 'getShowTabName'
     })
   },
   mounted: function(){
@@ -87,6 +92,7 @@ export default {
     },
     search () {
       console.log('click!')
+      this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       this.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
     },
     downloadImages () {
@@ -101,23 +107,36 @@ export default {
       clearTimeout(timer);
     }
     timer = setTimeout(function() {
-      console.log('call')
-      thisObj.reDraw();
-      if(document.getElementsByClassName("imageDiv").length != 0){
-        new Selectables({
-          elements: 'a',
-          selectedClass: 'active',
-          moreUsing: 'shiftKey',
-          zone: '#masonry-container',
-          onSelect: function (el) {
-            el.querySelector('input').setAttribute('checked', 'checked');
-          },
-          onDeselect: function (el) {
-            el.querySelector('input').removeAttribute('checked');
+      if(thisObj.loadingIconFlag){
+        console.log('call')
+        thisObj.reDraw();
+        if(thisObj.searchStr === thisObj.showTabName){
+          new Selectables({
+            elements: 'a',
+            selectedClass: 'active',
+            moreUsing: 'shiftKey',
+            zone: '#masonry-container',
+            onSelect: function (el) {
+              el.querySelector('input').setAttribute('checked', 'checked');
+            },
+            onDeselect: function (el) {
+              el.querySelector('input').removeAttribute('checked');
+            }
+          });
+          thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
+          var images = document.getElementsByClassName("imageDiv")
+          for(var i = 0, len = images.length; i < len ; i++){
+            var item = images[i]
+            var aTag = item.querySelector('a')
+            if(!aTag.classList.contains('active')){
+              aTag.classList.add('active')
+            }
+            item.querySelector('input').setAttribute('checked', 'checked')
           }
-        });
+
+        }
       }
-    }, 3000);
+    }, 500);
   }
 }
 </script>
@@ -177,5 +196,37 @@ a {
     z-index: 1090;
     border:2px dashed #cbd3e3;
     border-radius:0;
+}
+
+.layer{
+    position: fixed;
+    z-index: 100;
+    height: 100%;
+    width: 100%;
+    background: black;
+    top: 0;
+    opacity: 0.8;
+    left: 0;
+}
+
+.spinner {
+    margin: 50px;
+    height: 28px;
+    width: 28px;
+    animation: rotate 0.8s infinite linear;
+    border: 8px solid #41b883;
+    border-right-color: transparent;
+    border-radius: 50%;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+@keyframes rotate {
+  0%    { transform: rotate(0deg); }
+  100%  { transform: rotate(360deg); }
 }
 </style>
