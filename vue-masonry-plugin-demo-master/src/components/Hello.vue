@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="hello">
+    <h1>{{ msg }}</h1>
     <div style="display:inline-block;"><span style="display: inline-block; width:85px;">Id : </span><input type="text" :value="searchStr" v-on:input="changeSearchStr($event.target.value)"/><br>
     <span style="display: inline-block; width:85px;">Password : </span><input type="password" :value="searchStr" v-on:input="changeSearchStr($event.target.value)"/><br></div>
     <button @click="downloadImages()" style="display:inline-block;height: 42px; vertical-align: top;">login</button>
@@ -7,7 +8,8 @@
       <option value="product">product</option>
       <option value="sandbox">sandbox</option>
     </select>
-    <h1>{{ msg }}</h1>
+    <h2>Root Diractory Name</h2>
+    <input type="text" :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)"/>
     <h2>Search images by keyoword</h2>
     <input type="text" :value="searchStr" v-on:input="changeSearchStr($event.target.value)"/>
     <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="top: 0px; position: relative;">
@@ -19,11 +21,13 @@
       <option value="400">400</option>
     </select>
     <button @click="search()">Search</button>
-    <!-- <input type="text" :value="downloadPath" v-on:input="changeDownloadPath($event.target.value)"/> -->
-
     <button @click="downloadImages()">download</button>
+
     <br><br>
     <button v-on:click="reDraw">redrawVueMasonry</button>
+    <ul class="simple-tabs" id="images-tabs" > 
+      <li class=""  v-bind:key="index" v-for="(item, index) in imagesLabels"><span @click="clickTab(key)" v-bind:key="key" v-for="(value, key) in item">{{key}}</span></li>
+    </ul>
     <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
       <div v-masonry-tile class="imageDiv " v-bind:key="index" v-for="(item, index) in imagesBlocks" >
         <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]">
@@ -41,6 +45,7 @@
 
 <script>
 var timer;
+var tabFlag = false;
 import Vue from 'vue'
 import { M } from '../store/types'
 import { mapGetters } from 'vuex'
@@ -71,9 +76,9 @@ export default {
         this.$store.dispatch(M.CHANGE_SEARCH_COUNT, v)
       }
     },
-    downloadPath: {
+    rootDownloadPath: {
       get () {
-        return this.$store.getters.getDownloadPath
+        return this.$store.getters.getRootDownloadPath
       },
       set (v) {
         this.$store.dispatch(M.CHANGE_DOWNLOAD_PATH, v)
@@ -83,7 +88,8 @@ export default {
       imagesBlocks: 'getImagesBlocks',
       loadingIconFlag: 'getLoadingIconFlag',
       showTabName: 'getShowTabName',
-      downloadAjaxText: 'getDownloadAjaxText'
+      downloadAjaxText: 'getDownloadAjaxText',
+      imagesLabels: 'getImagesLabels'
     })
   },
   mounted: function(){
@@ -102,8 +108,8 @@ export default {
     changeSearchCount (count) {
       this.searchCount = count
     },
-    changeDownloadPath (downloadPath) {
-      this.downloadPath = downloadPath
+    changerootDownloadPath (rootDownloadPath) {
+      this.rootDownloadPath = rootDownloadPath
     },
     search () {
       console.log('click!')
@@ -116,6 +122,21 @@ export default {
       window.lockToHideLayer = true
       this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       this.$store.dispatch(M.DOWNLOAD_IMAGES)
+    },
+    clickTab (tabName) {
+      console.log(tabFlag)
+      if(tabFlag){
+        return false
+      }
+      tabFlag = true
+      var thisObj = this
+      thisObj.$store.dispatch(M.CHANGE_SHOW_TAB_NAME, tabName)
+      setTimeout(() => {
+        thisObj.reDraw()
+        setTimeout(() => {
+          tabFlag = false
+        }, 1000)
+      }, 200)
     }
   },
   updated(){
@@ -184,14 +205,15 @@ a {
 .imageDiv {
   border: 2px solid #ac0;
   width:200px;
-  display: table;
-  border-collapse:collapse;
+  display: table-cell;
   position: relative;
+  box-sizing: border-box;
   cursor: pointer;
   .image{
     width:100%;
     height: 100%;
     opacity: 0.5;
+    
   }
 
   .checkbox{
@@ -202,9 +224,11 @@ a {
 }
 
 .masonry-container {
-    min-width: 850px;
-    width:85%;
+    min-width: 800px;
+    width:800px;
     margin: 0 auto;
+    display:table;
+    border-collapse: collapse;
 }
 
 .masonry-container .active .image{
@@ -230,7 +254,7 @@ a {
 }
 
 .layerText {
-     width: 100%;
+    width: 100%;
     height: 20px;
     margin: auto;
     top: -80px;
@@ -259,5 +283,28 @@ a {
 @keyframes rotate {
   0%    { transform: rotate(0deg); }
   100%  { transform: rotate(360deg); }
+}
+
+.simple-tabs{
+  display: table;
+  width: 800px;
+  margin: auto;
+  margin-bottom: -2px;
+  border-collapse: collapse;
+  li{
+    border: 2px solid #ddd;
+    flex: auto;
+    width: 200px;
+    margin: 0;
+    display: table-cell;
+    &:hover{
+      background-color:#ddd;
+    }
+
+    span{
+      display: block;
+      width: 100%;
+    }
+  }
 }
 </style>

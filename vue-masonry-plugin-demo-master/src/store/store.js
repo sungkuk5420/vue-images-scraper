@@ -7,12 +7,13 @@ var socket = io.connect('http://localhost:3000');
 const state = {
   searchStr: '',
   searchCount: 10,
-  downloadPath: '',
+  rootDownloadPath: '',
   imagesBlocks: [
   ],
   loadingIconFlag: false,
   showTabName: '',
-  downloadAjaxText: ''
+  downloadAjaxText: '',
+  imagesLabels: []
 }
 
 const getters = {
@@ -22,11 +23,20 @@ const getters = {
   getSearchCount () {
     return state.searchCount
   },
-  getDownloadPath () {
-    return state.downloadPath
+  getRootDownloadPath () {
+    return state.rootDownloadPath
   },
   getImagesBlocks () {
-    return state.imagesBlocks
+    var showIndex = -1
+    var index = 0
+    state.imagesLabels.forEach(item => {
+      if(item[state.showTabName] != undefined){
+        showIndex = index
+        console.log('show tab : '+state.showTabName)
+      }
+      index++
+    })
+    return state.imagesBlocks[showIndex]
   },
   getLoadingIconFlag () {
     return state.loadingIconFlag
@@ -36,6 +46,9 @@ const getters = {
   },
   getDownloadAjaxText () {
     return state.downloadAjaxText
+  },
+  getImagesLabels () {
+    return state.imagesLabels
   }
 }
 
@@ -46,8 +59,8 @@ const actions = {
   [M.CHANGE_SEARCH_COUNT] ({ commit }, searchCount) {
     commit(M.CHANGE_SEARCH_COUNT, searchCount)
   },
-  [M.CHANGE_DOWNLOAD_PATH] ({ commit }, downloadPath) {
-    commit(M.CHANGE_DOWNLOAD_PATH, downloadPath)
+  [M.CHANGE_DOWNLOAD_PATH] ({ commit }, rootDownloadPath) {
+    commit(M.CHANGE_DOWNLOAD_PATH, rootDownloadPath)
   },
   [M.SEARCH_IMAGES_FROM_GOOGLE] ({ commit }) {
     console.log('search images')
@@ -58,9 +71,9 @@ const actions = {
       (results) => {
         console.log('action / SEARCH_IMAGES_FROM_GOOGLE / success')
         console.log('results= ', results)
+        commit(M.CHANGE_SHOW_TAB_NAME, thisObj.getters.getSearchStr)
         commit(M.SEARCH_IMAGES_FROM_GOOGLE, results)
         window.lockToHideLayer = false
-        // commit(M.CHANGE_SHOW_TAB_NAME, thisObj.getters.getSearchStr)
       },
       (res) => {
         console.log('action / SEARCH_IMAGES_FROM_GOOGLE / error', res)
@@ -115,11 +128,11 @@ const mutations = {
   [M.CHANGE_SEARCH_COUNT] (state, searchCount) {
     state.searchCount = searchCount
   },
-  [M.CHANGE_DOWNLOAD_PATH] (state, downloadPath) {
-    state.downloadPath = downloadPath
+  [M.CHANGE_DOWNLOAD_PATH] (state, rootDownloadPath) {
+    state.rootDownloadPath = rootDownloadPath
   },
   [M.SEARCH_IMAGES_FROM_GOOGLE] (state, results) {
-    state.imagesBlocks = results.map((item) => {
+    state.imagesBlocks.push(results.map((item) => {
       return {
         height: item.height,
         thumb_height: item.thumb_height,
@@ -130,7 +143,10 @@ const mutations = {
         width: item.width,
         checked: 'checked'
       }
-    })
+    }))
+    var obj = {};
+    obj[state.searchStr] = state.imagesBlocks.length - 1;
+    state.imagesLabels.push(obj)
   },
   [M.CHANGE_LOADING_ICON_FLAG] (state) {
     console.log('state.loadingIconFlag : ' + state.loadingIconFlag)
@@ -140,7 +156,16 @@ const mutations = {
     state.showTabName = showTabName
   },
   [M.CHANGE_IMAGE_CHECK] (state, imageIndex) {
-    state.imagesBlocks[imageIndex].checked = state.imagesBlocks[imageIndex].checked === 'checked' ? '' : 'checked'
+    var showIndex = -1
+    var index = 0
+    state.imagesLabels.forEach(item => {
+      if(item[state.showTabName] != undefined){
+        showIndex = index
+        console.log('show tab : '+state.showTabName)
+      }
+      index++
+    })
+    state.imagesBlocks[showIndex][imageIndex].checked = state.imagesBlocks[showIndex][imageIndex].checked === 'checked' ? '' : 'checked'
   },
   [M.CHANGE_DOWNLOAD_AJAX_TEXT] (state, downloadAjaxText) {
     state.downloadAjaxText = downloadAjaxText

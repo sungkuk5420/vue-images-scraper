@@ -48,7 +48,8 @@ export default () => {
         [
           api.post(apiURL, {
             imagesURL: imagesURL,
-            downloadPath: state.downloadPath,
+            imagesLabels: state.imagesLabels,
+            rootDownloadPath: state.rootDownloadPath,
             searchKeyword: state.searchStr
           })
         ]
