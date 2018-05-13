@@ -8,6 +8,7 @@ var Scraper = require ('images-scraper')
   , mkdir = require('node-mkdir')
   , zipdir = require('zip-dir');
 var rootDownloadPath = '';
+var rootDiractoryName = '';
 var searchKeyword = '';
 var imagesLabels = [];
 var completeImages = 0;
@@ -17,7 +18,9 @@ router.get('/', function(req, res, next) {
   res.sendFile(path.join(__dirname, '../vue-masonry-plugin-demo-master/dist/', 'index.html'));
 });
 router.get('/searchGoogle', function(req, res, next) {
-  searchKeyword = req.query.keyword;
+  // searchKeyword = req.query.keyword;
+  rootDiractoryName = req.query.rootDownloadPath;
+  searchKeyword = rootDiractoryName+' '+req.query.keyword;
   google.list({
     keyword: searchKeyword,
     num: req.query.count,
@@ -39,8 +42,8 @@ router.post('/downloadImages', function(req, res, next) {
   var myPromiseLoop = promiseLoop(loopingPromise);
   var images = [];
   images = JSON.parse(req.body.imagesURL);
-  searchKeyword = req.body.searchKeyword
   rootDownloadPath = __dirname.replace(/\\/gi,"/").replace("routes","")+'downloadImages/';
+  rootDiractoryName = req.body.rootDownloadPath;
   imagesLabels = req.body.imagesLabels;
   if (rootDownloadPath.substr(rootDownloadPath.length-1,1) !== '/') {
     rootDownloadPath += '/';
@@ -49,12 +52,12 @@ router.post('/downloadImages', function(req, res, next) {
     // console.log(rootDownloadPath);
     // console.log(imagesLabels);
     
-    let rootDownloadPathResult = await mkdir('downloadImages/'+req.body.rootDownloadPath+'/', (__dirname.replace(/\\/gi,"/").replace("/routes","")));
+    let rootDownloadPathResult = await mkdir('downloadImages/'+rootDiractoryName+'/', (__dirname.replace(/\\/gi,"/").replace("/routes","")));
 
     await imagesLabels.forEach((currentLabel)=>{
-      mkdir('downloadImages/'+req.body.rootDownloadPath+'/'+Object.keys(currentLabel)[0]+'/', (__dirname.replace(/\\/gi,"/").replace("/routes","")));
+      mkdir('downloadImages/'+rootDiractoryName+'/'+Object.keys(currentLabel)[0]+'/', (__dirname.replace(/\\/gi,"/").replace("/routes","")));
       var index = currentLabel[Object.keys(currentLabel)];
-      var subDownloadPathResult = __dirname.replace(/\\/gi,"/").replace("routes","")+'downloadImages/'+req.body.rootDownloadPath+'/'+Object.keys(currentLabel)[0]+'/';
+      var subDownloadPathResult = __dirname.replace(/\\/gi,"/").replace("routes","")+'downloadImages/'+rootDiractoryName+'/'+Object.keys(currentLabel)[0]+'/';
       myPromiseLoop({
         value: 0,
         images: images[index],
@@ -65,7 +68,7 @@ router.post('/downloadImages', function(req, res, next) {
       // console.log('images', images.length)
       // console.log('completeImages', completeImages)
       if( completeImages === images.length){
-        zipdir(rootDownloadPath+req.body.rootDownloadPath, { saveTo: rootDownloadPath+req.body.rootDownloadPath+'.zip' }, function (err, buffer) {
+        zipdir(rootDownloadPath+rootDiractoryName, { saveTo: rootDownloadPath+rootDiractoryName+'.zip' }, function (err, buffer) {
           console.log('zip file created!')
           clearInterval(setIntervalFunc);
         });
