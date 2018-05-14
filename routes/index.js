@@ -13,18 +13,14 @@ var searchKeyword = '';
 var imagesLabels = [];
 var completeImages = 0;
 var setIntervalFunc = undefined;
-var Curl = require('node-libcurl').Curl;
-var querystring = require('querystring');
-var fs = require('fs');
- 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile(path.join(__dirname, '../vue-masonry-plugin-demo-master/dist/', 'index.html'));
 });
 router.get('/searchGoogle', function(req, res, next) {
   // searchKeyword = req.query.keyword;
-  searchKeyword = rootDiractoryName+' '+req.query.keyword;
   rootDiractoryName = req.query.rootDownloadPath;
+  searchKeyword = rootDiractoryName+' '+req.query.keyword;
   google.list({
     keyword: searchKeyword,
     num: req.query.count,
@@ -75,40 +71,6 @@ router.post('/downloadImages', function(req, res, next) {
         zipdir(rootDownloadPath+rootDiractoryName, { saveTo: rootDownloadPath+rootDiractoryName+'.zip' }, function (err, buffer) {
           console.log('zip file created!')
           clearInterval(setIntervalFunc);
-          console.log('start file upload zip')
-          fs.readFile( rootDownloadPath+rootDiractoryName+'.zip', function (err, data) {
-            if (err) {
-              throw err; 
-            }
-            console.log('file open complete')
-        
-            var curl = new Curl();
-            var mytoken = 'NEWSCXBW2WT3HDOSSYSLNFOXNYNFXR6SUNJ4SRP5FCSCMPHKD3IHFYPV5ZW7HEPSG4E4ZIGW352HRPNXGLM5G5VTLVSZZK33E3YXURI';
-            var url = "https://api.einstein.ai/v1/vision/datasets/upload";
-        
-            data = querystring.stringify(data);
-        
-            curl.setOpt(Curl.option.URL, url);
-            curl.setOpt(Curl.option.POSTFIELDS, data);
-            // curl.setOpt(Curl.option.HTTPHEADER, ['User-Agent: node-libcurl/1.0']);
-            curl.setOpt(Curl.option.HTTPHEADER, [`Authorization: Bearer ${mytoken}`]);
-            curl.setOpt(Curl.option.HTTPHEADER, ["Cache-Control: no-cache"]);
-            curl.setOpt(Curl.option.HTTPHEADER, ["Content-Type: multipart/form-data"]);
-            curl.setOpt(Curl.option.VERBOSE, true);
-                
-            curl.perform();
-        
-            curl.on('end', function(statusCode, body) {
-              console.log('file upload complete')
-              console.log(body);
-        
-              this.close();
-            });
-        
-            curl.on('error', function(err){
-              console.log('error',err);
-            });
-          });
         });
       }
     }, 5000)
