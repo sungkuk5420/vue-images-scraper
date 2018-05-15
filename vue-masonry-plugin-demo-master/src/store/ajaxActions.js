@@ -83,6 +83,36 @@ export default () => {
           }
         }
       )
+    },
+
+    login (state, cSuccess, cError) {
+      let api = axios.create()
+      let apiURL = `http://localhost:3000/login?username=${state.username}&password=${state.password}`
+      // let apiURL = `http://13.125.125.39:8000/login?username=${state.username}&password=${state.password}`
+      axios.all(
+        [
+          api.get(apiURL)
+        ]
+      ).then(
+        (responses) => {
+          let errors = responses.filter((res) => {
+            return res.status !== 200
+          })
+          if (errors.length < 1) {
+            console.log('200 response= ', responses[0])
+            cSuccess(responses[0].data)
+          }
+          else {
+            let errmsgs = errors.reduce((memo = '', res) => {
+              return memo + `${res.status} : ${res.message}\n`
+            }, '')
+            console.warn(errmsgs)
+          }
+        },
+        (error) => {
+          cError(error)
+        }
+      )
     }
 
   }

@@ -15,9 +15,53 @@ var completeImages = 0;
 var setIntervalFunc = undefined;
 var FormData = require('form-data');
 var fs = require('fs');
+var sf = require('node-salesforce');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile(path.join(__dirname, '../vue-masonry-plugin-demo-master/dist/', 'index.html'));
+});
+
+router.get("/login", function(req, res, next){
+	var conn = new sf.Connection({
+	  loginUrl : 'https://login.salesforce.com'
+  });
+  // 'hmatsuyamaechimo@uhuru.jp   ';
+  // 'Salesf0rceNkm4UuwD9UGULsLIeYbqNdA4M';
+  console.log(req.query.username.toString());
+  console.log(req.query.password);
+	var username = req.query.username.toString();
+  var password = req.query.password;
+
+	conn.login(username, password, function(err) {
+	  if (!err) {
+	  	console.log('login success');
+
+		var records = [];
+		var sql = " Select id, token__c From EinsteinInfo__c Where recordtype.developername = 'token'";
+
+		conn.query(sql)
+		  .on("record", function(record) {
+		    records.push(record);
+		  })
+		  .on("end", function(query) {
+		    var token = '';
+		    console.log("total in database : " + query.totalSize);
+		    console.log("total fetched : " + query.totalFetched);
+	        for (var i=0; i<records.length; i++) {
+		        console.log("Token : " + records[i].token__c);
+		        token = records[i].token__c;
+		    }
+		    //return token
+		    res.send(token);
+
+		  })
+		  .run({ autoFetch : true, maxFetch : 4000 });
+
+	  }else{
+      console.log(err);
+    }
+	});
 });
 router.get('/searchGoogle', function(req, res, next) {
   // searchKeyword = req.query.keyword;

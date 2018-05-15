@@ -10,7 +10,9 @@ const state = {
   loadingIconFlag: false,
   showTabName: '',
   downloadAjaxText: '',
-  imagesLabels: []
+  imagesLabels: [],
+  username:'',
+  password:''
 }
 
 const getters = {
@@ -49,6 +51,12 @@ const getters = {
   },
   getImagesLabels () {
     return state.imagesLabels
+  },
+  getUsername () {
+    return state.username
+  },
+  getPassword () {
+    return state.password
   }
 }
 
@@ -110,7 +118,31 @@ const actions = {
   },
   [M.CHANGE_DOWNLOAD_AJAX_TEXT] ({ commit }, downloadAjaxText) {
     commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, downloadAjaxText)
-  }
+  },
+  [M.CHANGE_USERNAME] ({ commit }, username) {
+    commit(M.CHANGE_USERNAME, username)
+  },
+  [M.CHANGE_PASSWORD] ({ commit }, password) {
+    commit(M.CHANGE_PASSWORD, password)
+  },
+  [M.LOGIN_AJAX] ({ commit }) {
+    console.log('LOGIN_AJAX')
+    let thisObj = this
+    // commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, "download complete : 0 / " + thisObj.getters.getImagesBlocks.length)
+
+    ajaxActions().login(
+      state,
+      (results) => {
+        console.log('action / LOGIN_AJAX / success')
+        console.log('results= ', results)
+        // window.lockToHideLayer = false
+        // commit(M.DOWNLOAD_IMAGES, results)
+      },
+      (res) => {
+        console.log('action / LOGIN_AJAX / error', res)
+      }
+    )
+  },
 
 
 }
@@ -163,6 +195,12 @@ const mutations = {
   },
   [M.CHANGE_DOWNLOAD_AJAX_TEXT] (state, downloadAjaxText) {
     state.downloadAjaxText = downloadAjaxText
+  },
+  [M.CHANGE_USERNAME] (state, username) {
+    state.username = username
+  },
+  [M.CHANGE_PASSWORD] (state, password) {
+    state.password = password
   }
 }
 
