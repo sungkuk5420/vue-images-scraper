@@ -1,9 +1,6 @@
 import { M } from './types'
 import ajaxActions from './ajaxActions'
 
-var socket = io.connect('http://localhost:3000');
-// var socket = io.connect('http://13.125.125.39:8000');
-
 const state = {
   searchStr: '',
   searchCount: 10,
@@ -37,6 +34,9 @@ const getters = {
       index++
     })
     return state.imagesBlocks[showIndex]
+  },
+  getAllImagesBlocks () {
+    return state.imagesBlocks
   },
   getLoadingIconFlag () {
     return state.loadingIconFlag
@@ -84,13 +84,7 @@ const actions = {
     console.log('download images')
     let thisObj = this
     commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, "download complete : 0 / " + thisObj.getters.getImagesBlocks.length)
-    socket.on('Download Complete',function(data){
-      console.log('data : '+ data)
-      commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, "download complete : "+ data + " / " + thisObj.getters.getImagesBlocks.length)
-      if(data ===  thisObj.getters.getImagesBlocks.length-1){
-        window.lockToHideLayer = false
-      }
-    });
+
     console.log(window.lockToHideLayer)
     ajaxActions().downloadImages(
       state,

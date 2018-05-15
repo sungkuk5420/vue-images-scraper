@@ -69,8 +69,10 @@ router.post('/downloadImages', function(req, res, next) {
     setIntervalFunc = setInterval(() => {
       // console.log('images', images.length)
       // console.log('completeImages', completeImages)
-      if( completeImages === images.length){
+      if( completeImages === images.length){ 
+        io.sockets.emit('Change Layer Text', 'Create Zip File');
         zipdir(rootDownloadPath+rootDiractoryName, { saveTo: rootDownloadPath+rootDiractoryName+'.zip' }, function (err, buffer) {
+          io.sockets.emit('Change Layer Text', 'Upload Zip File');
           console.log('zip file created!')
           clearInterval(setIntervalFunc);
           console.log('start file upload zip')
@@ -99,6 +101,14 @@ router.post('/downloadImages', function(req, res, next) {
             }
             console.log(httpResponse.statusCode);
             console.log('Upload successful!  Server responded with:', body);
+            if(httpResponse.statusCode === 200){
+              io.sockets.emit('Change Layer Text', 'Upload Successful');
+            }else{
+              io.sockets.emit('Change Layer Text', 'Upload Fail');
+            }
+            setTimeout(() => {
+              io.sockets.emit('Remove Layer');
+            }, 500);
           });
         });
       }
@@ -142,6 +152,9 @@ var loopingPromise = function(params) {
                   });
               }).catch((err) => {
                   console.log('download error',err)
+                  if(currentImage.checked === 'checked'){
+                    io.sockets.emit('Download Complete',value);                    
+                  }
                   resolve({
                     value: ++value,
                     images: images,

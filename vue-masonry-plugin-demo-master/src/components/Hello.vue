@@ -25,7 +25,7 @@
 
     <br><br>
     <button v-on:click="reDraw">redrawVueMasonry</button>
-    <ul class="simple-tabs" id="images-tabs" > 
+    <ul class="simple-tabs" id="images-tabs" >
       <li class=""  v-bind:key="index" v-for="(item, index) in imagesLabels"><span @click="clickTab(key)" v-bind:key="key" v-for="(value, key) in item">{{key}}</span></li>
     </ul>
     <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
@@ -44,6 +44,10 @@
 </template>
 
 <script>
+
+//var socket = io.connect('http://localhost:3000');
+ var socket = io.connect('http://13.125.125.39:8000');
+
 var timer;
 var tabFlag = false;
 import Vue from 'vue'
@@ -86,6 +90,7 @@ export default {
     },
     ...mapGetters({
       imagesBlocks: 'getImagesBlocks',
+      allImagesBlocks: 'getAllImagesBlocks',
       loadingIconFlag: 'getLoadingIconFlag',
       showTabName: 'getShowTabName',
       downloadAjaxText: 'getDownloadAjaxText',
@@ -93,8 +98,28 @@ export default {
     })
   },
   mounted: function(){
-    var thisObj = this;
-    window.lockToHideLayer = false;
+    var thisObj = this
+    window.lockToHideLayer = false
+    window.downloadCompleteCount = 0
+
+    socket.on('Download Complete',function(data){
+      var totalImagesCount = 0
+      for(var i = 0, len = thisObj.allImagesBlocks.length ; i < len ; i++){
+        var currentImages = thisObj.allImagesBlocks[i].filter((image) => {
+          return image.checked == 'checked'
+        })
+        totalImagesCount += currentImages.length;
+      }
+      window.downloadCompleteCount++;
+      thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, "download complete : "+ window.downloadCompleteCount + " / " + totalImagesCount)
+    });
+    socket.on('Change Layer Text',function(text){
+      thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, text)
+    });
+    socket.on('Remove Layer',function(){
+      window.lockToHideLayer = false
+      thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
+    });
   },
   methods: {
     reDraw () {
@@ -119,6 +144,7 @@ export default {
     },
     downloadImages () {
       console.log('click!')
+      window.downloadCompleteCount = 0
       window.lockToHideLayer = true
       this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       this.$store.dispatch(M.DOWNLOAD_IMAGES)
@@ -213,7 +239,7 @@ a {
     width:100%;
     height: 100%;
     opacity: 0.5;
-    
+
   }
 
   .checkbox{
