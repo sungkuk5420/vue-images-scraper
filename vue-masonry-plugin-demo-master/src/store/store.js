@@ -65,7 +65,7 @@ const actions = {
   [M.SEARCH_IMAGES_FROM_GOOGLE] ({ commit }) {
     console.log('search images')
     let thisObj = this
-    commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, "searching : "+ thisObj.getters.getSearchStr)
+    commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, "[ " + thisObj.getters.getSearchStr + " ] 画像検索中")
     ajaxActions().searchGoogle(
       state,
       (results) => {

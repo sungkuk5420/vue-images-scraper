@@ -45,8 +45,8 @@
 
 <script>
 
-//var socket = io.connect('http://localhost:3000');
- var socket = io.connect('http://13.125.125.39:8000');
+var socket = io.connect('http://localhost:3000');
+//  var socket = io.connect('http://13.125.125.39:8000');
 
 var timer;
 var tabFlag = false;
@@ -111,9 +111,10 @@ export default {
         totalImagesCount += currentImages.length;
       }
       window.downloadCompleteCount++;
-      thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, "download complete : "+ window.downloadCompleteCount + " / " + totalImagesCount)
+      thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, "画像ファイル圧縮中（"+ window.downloadCompleteCount + " / " + totalImagesCount+"）")
     });
     socket.on('Change Layer Text',function(text){
+      console.log('Change Layer Text@@@@@@@@@@@@')
       thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, text)
     });
     socket.on('Remove Layer',function(){

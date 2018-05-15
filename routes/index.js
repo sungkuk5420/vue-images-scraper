@@ -67,18 +67,19 @@ router.post('/downloadImages', function(req, res, next) {
       });
     })
     setIntervalFunc = setInterval(() => {
-      // console.log('images', images.length)
-      // console.log('completeImages', completeImages)
+      console.log('images', images.length)
+      console.log('completeImages', completeImages)
       if( completeImages === images.length){ 
-        io.sockets.emit('Change Layer Text', 'Create Zip File');
+        console.log('モデル用画像ファイル作成中')
+        io.sockets.emit('Change Layer Text', 'モデル用画像ファイル作成中');
         zipdir(rootDownloadPath+rootDiractoryName, { saveTo: rootDownloadPath+rootDiractoryName+'.zip' }, function (err, buffer) {
-          io.sockets.emit('Change Layer Text', 'Upload Zip File');
+          io.sockets.emit('Change Layer Text', 'モデル作成中');
           console.log('zip file created!')
           clearInterval(setIntervalFunc);
           console.log('start file upload zip')
           console.log('file open complete')
           var mytoken = 'NEWSCXBW2WT3HDOSSYSLNFOXNYNFXR6SUNJ4SRP5FCSCMPHKD3IHFYPV5ZW7HEPSG4E4ZIGW352HRPNXGLM5G5VTLVSZZK33E3YXURI';
-          var url = "https://api.einstein.ai/v1/vision/datasets/upload";
+          var url = "https://api.einstein.ai/v2/vision/datasets/upload/sync";
       
           var request = require('request');
           var headers = {             
@@ -93,7 +94,8 @@ router.post('/downloadImages', function(req, res, next) {
           var https = require('https');
           var FormData = require('form-data');
           var formData = {
-            data: fs.createReadStream(rootDownloadPath+rootDiractoryName+'.zip')
+            data: fs.createReadStream(rootDownloadPath+rootDiractoryName+'.zip'),
+            type: 'image'
           };
           request.post({headers: headers,url: url, formData: formData}, function(err, httpResponse, body) {
             if (err) {
@@ -102,13 +104,36 @@ router.post('/downloadImages', function(req, res, next) {
             console.log(httpResponse.statusCode);
             console.log('Upload successful!  Server responded with:', body);
             if(httpResponse.statusCode === 200){
-              io.sockets.emit('Change Layer Text', 'Upload Successful');
+              io.sockets.emit('Change Layer Text', 'モデル作成 完了');
+              
+              var datasetid = JSON.parse(body).id;
+              var trainUrl = ' https://api.einstein.ai/v2/vision/train'
+              //　トレーニング
+              var headers = {             
+                'user-agent': 'curl/7.22.0',
+                'Authorization': `Bearer ${mytoken}`,
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'multipart/form-data'
+              };
+              
+              var formData = {
+                datasetId: `${datasetid}`,
+                name: `${rootDiractoryName}`
+              };
+              request.post({headers: headers,url: url, formData: formData}, function(err, httpResponse, body) {
+                if (err) {
+                  return console.error('upload failed:', err);
+                }
+                console.log(httpResponse.statusCode);
+                console.log('Upload successful!  Server responded with:', body);
+              });
+
             }else{
-              io.sockets.emit('Change Layer Text', 'Upload Fail');
+              io.sockets.emit('Change Layer Text', 'モデル作成 失敗');
             }
             setTimeout(() => {
               io.sockets.emit('Remove Layer');
-            }, 500);
+            }, 1000);
           });
         });
       }

@@ -3,8 +3,8 @@ export default () => {
   return {
     searchGoogle (state, cSuccess, cError) {
       let api = axios.create()
-      // let apiURL = `http://localhost:3000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}&rootDownloadPath=${state.rootDownloadPath}`
-      let apiURL = `http://13.125.125.39:8000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}&rootDownloadPath=${state.rootDownloadPath}`
+      let apiURL = `http://localhost:3000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}&rootDownloadPath=${state.rootDownloadPath}`
+      // let apiURL = `http://13.125.125.39:8000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}&rootDownloadPath=${state.rootDownloadPath}`
       axios.all(
         [
           api.get(apiURL)
@@ -44,8 +44,8 @@ export default () => {
       let imagesURL = JSON.stringify(state.imagesBlocks)
       console.log(imagesURL)
       // return false
-      // let apiURL = `http://localhost:3000/downloadImages`
-      let apiURL = `http://13.125.125.39:8000/downloadImages`
+      let apiURL = `http://localhost:3000/downloadImages`
+      // let apiURL = `http://13.125.125.39:8000/downloadImages`
       axios.all(
         [
           api.post(apiURL, {
