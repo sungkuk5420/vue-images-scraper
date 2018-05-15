@@ -13,6 +13,8 @@ var searchKeyword = '';
 var imagesLabels = [];
 var completeImages = 0;
 var setIntervalFunc = undefined;
+var FormData = require('form-data');
+var fs = require('fs');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile(path.join(__dirname, '../vue-masonry-plugin-demo-master/dist/', 'index.html'));
@@ -71,6 +73,33 @@ router.post('/downloadImages', function(req, res, next) {
         zipdir(rootDownloadPath+rootDiractoryName, { saveTo: rootDownloadPath+rootDiractoryName+'.zip' }, function (err, buffer) {
           console.log('zip file created!')
           clearInterval(setIntervalFunc);
+          console.log('start file upload zip')
+          console.log('file open complete')
+          var mytoken = 'NEWSCXBW2WT3HDOSSYSLNFOXNYNFXR6SUNJ4SRP5FCSCMPHKD3IHFYPV5ZW7HEPSG4E4ZIGW352HRPNXGLM5G5VTLVSZZK33E3YXURI';
+          var url = "https://api.einstein.ai/v1/vision/datasets/upload";
+      
+          var request = require('request');
+          var headers = {             
+              'user-agent': 'curl/7.22.0',
+              'Authorization': `Bearer ${mytoken}`,
+              'Cache-Control': 'no-cache',
+              'Content-Type': 'multipart/form-data'
+          };
+          
+          console.log(rootDownloadPath+rootDiractoryName+'.zip');
+          
+          var https = require('https');
+          var FormData = require('form-data');
+          var formData = {
+            data: fs.createReadStream(rootDownloadPath+rootDiractoryName+'.zip')
+          };
+          request.post({headers: headers,url: url, formData: formData}, function(err, httpResponse, body) {
+            if (err) {
+              return console.error('upload failed:', err);
+            }
+            console.log(httpResponse.statusCode);
+            console.log('Upload successful!  Server responded with:', body);
+          });
         });
       }
     }, 5000)
