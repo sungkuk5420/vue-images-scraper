@@ -186,6 +186,7 @@ router.post('/downloadImages', function(req, res, next) {
                 conn.sobject(objectNm).create(modelinfo, function(err, ret) {
                   if (!err && ret.success) {
                     console.log('Created record id : ' + ret.id);
+                    io.sockets.emit('Inserted SObject', ret.id);
                     res.send('success register :' +ret.id);
             
                   }else{
@@ -196,7 +197,7 @@ router.post('/downloadImages', function(req, res, next) {
               });
 
             }else{
-              io.sockets.emit('Change Layer Text', 'モデル作成 失敗');
+              io.sockets.emit('Change Layer Text', 'モデル作成 失敗');         
             }
             setTimeout(() => {
               io.sockets.emit('Remove Layer');

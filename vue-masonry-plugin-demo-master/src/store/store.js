@@ -14,7 +14,8 @@ const state = {
   username:'',
   password:'',
   connectServerType: 'Product',
-  accessToken: ''
+  accessToken: '',
+  einsteinInfoId: ''
 }
 
 const getters = {
@@ -65,6 +66,9 @@ const getters = {
   },
   getAccessToken () {
     return state.accessToken
+  },
+  getEinsteinInfoId () {
+    return state.einsteinInfoId
   }
 }
 
@@ -157,6 +161,9 @@ const actions = {
   },
   [M.CHANGE_ACCESS_TOKEN] ({ commit }, accessToken) {
     commit(M.CHANGE_ACCESS_TOKEN, accessToken)
+  },
+  [M.CHANGE_EINSTEIN_INFO_ID] ({ commit }, einsteinInfoId) {
+    commit(M.CHANGE_EINSTEIN_INFO_ID, einsteinInfoId)
   }
 
 
@@ -222,6 +229,9 @@ const mutations = {
   },
   [M.CHANGE_ACCESS_TOKEN] (state, accessToken) {
     state.accessToken = accessToken
+  },
+  [M.CHANGE_EINSTEIN_INFO_ID] (state, einsteinInfoId) {
+    state.einsteinInfoId = einsteinInfoId
   }
 }
 

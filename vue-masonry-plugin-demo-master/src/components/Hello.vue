@@ -2,7 +2,7 @@
   <div id="app" class="hello">
     <!-- <h1>{{ msg }}</h1> -->
 
-      <div class="grid">
+    <div class="grid">
 
       <div class="form login">
 
@@ -41,28 +41,38 @@
           </button>
         </div>
         <svg xmlns="http://www.w3.org/2000/svg" class="icons"><symbol id="arrow-right" viewBox="0 0 1792 1792"><path d="M1600 960q0 54-37 91l-651 651q-39 37-91 37-51 0-90-37l-75-75q-38-38-38-91t38-91l293-293H245q-52 0-84.5-37.5T128 1024V896q0-53 32.5-90.5T245 768h704L656 474q-38-36-38-90t38-90l75-75q38-38 90-38 53 0 91 38l651 651q37 35 37 90z"/></symbol><symbol id="lock" viewBox="0 0 1792 1792"><path d="M640 768h512V576q0-106-75-181t-181-75-181 75-75 181v192zm832 96v576q0 40-28 68t-68 28H416q-40 0-68-28t-28-68V864q0-40 28-68t68-28h32V576q0-184 132-316t316-132 316 132 132 316v192h32q40 0 68 28t28 68z"/></symbol><symbol id="user" viewBox="0 0 1792 1792"><path d="M1600 1405q0 120-73 189.5t-194 69.5H459q-121 0-194-69.5T192 1405q0-53 3.5-103.5t14-109T236 1084t43-97.5 62-81 85.5-53.5T538 832q9 0 42 21.5t74.5 48 108 48T896 971t133.5-21.5 108-48 74.5-48 42-21.5q61 0 111.5 20t85.5 53.5 62 81 43 97.5 26.5 108.5 14 109 3.5 103.5zm-320-893q0 159-112.5 271.5T896 896 624.5 783.5 512 512t112.5-271.5T896 128t271.5 112.5T1280 512z"/></symbol></svg>
-<br>
+        <br>
         <div style="background-color: #5e6266; height: 1px;"></div>
-    <br>
-        <div data-v-75a60854="" class="form__field"><input data-v-75a60854="" id="category" type="text" name="category" placeholder="Category" required="required"  :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)" class="form__input"></div>
-        <div data-v-75a60854="" class="form__field">
-          <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Keyword" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
-          <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto;">
-            <option value="10">10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="200">200</option>
-            <option value="300">300</option>
-            <option value="400">400</option>
-          </select>
-          <button @click="search()" class="submit" style="width:auto;">Search</button>
-        </div>
-        <div data-v-75a60854="" class="form__field">
-          <button :class="[accessToken==='' ? 'disableBtn' : (accessToken==='fail' ? 'disableBtn' : '')]" @click="downloadImages($event)" class="submit">Create Model</button>
+        <br>
+
+        <div v-show="einsteinInfoId == ''">
+          <div data-v-75a60854="" class="form__field"><input data-v-75a60854="" id="category" type="text" name="category" placeholder="Category" required="required"  :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)" class="form__input"></div>
+          <div data-v-75a60854="" class="form__field">
+            <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Keyword" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
+            <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto;">
+              <option value="10">10</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="300">300</option>
+              <option value="400">400</option>
+            </select>
+            <button @click="search()" class="submit" style="width:auto;">Search</button>
+          </div>
+          <div data-v-75a60854="" class="form__field">
+            <button :class="[accessToken==='' ? 'disableBtn' : (accessToken==='fail' ? 'disableBtn' : '')]" @click="downloadImages($event)" class="submit">Create Model</button>
+          </div>
         </div>
       </div>
     </div>
+
+    <div v-show="einsteinInfoId != ''" class="whiteText">
+      <h1>モデル作成 完了</h1>
+      <h3>Salesforce SObject Id :</h3>
+      <h3>{{einsteinInfoId}}</h3>
+    </div>
     <br><br>
+
     <!-- <button v-on:click="reDraw">redrawVueMasonry</button> -->
     <ul class="simple-tabs" id="images-tabs" >
       <li class=""  v-bind:key="index" v-for="(item, index) in imagesLabels"><span @click="clickTab(key, $event)" v-bind:key="key" v-for="(value, key) in item">{{key}}</span></li>
@@ -151,7 +161,8 @@ export default {
       downloadAjaxText: 'getDownloadAjaxText',
       imagesLabels: 'getImagesLabels',
       connectServerType: 'getConnectServerType',
-      accessToken: 'getAccessToken'
+      accessToken: 'getAccessToken',
+      einsteinInfoId: 'getEinsteinInfoId'
     })
   },
   mounted: function(){
@@ -178,6 +189,10 @@ export default {
       window.lockToHideLayer = false
       thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
     });
+    socket.on('Inserted SObject',function(einsteinInfoId){
+      thisObj.$store.dispatch(M.CHANGE_EINSTEIN_INFO_ID,einsteinInfoId)
+    });
+
   },
   methods: {
     reDraw () {
@@ -718,4 +733,14 @@ input[type=radio]:checked ~ label{
   color: white;
 }
 
+.whiteText{
+  color: white;
+}
+.whiteText h1{
+  margin-bottom: 0;
+}
+.whiteText h3{
+  margin-top: 3px;
+  margin-bottom: 0;
+}
 </style>
