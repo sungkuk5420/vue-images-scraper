@@ -23,45 +23,44 @@ router.get('/', function(req, res, next) {
 });
 
 router.get("/login", function(req, res, next){
+  var connectServerUrl = req.query.connectServerType === "Product" ? 'https://login.salesforce.com' : 'https://test.salesforce.com';
 	var conn = new sf.Connection({
-	  loginUrl : 'https://login.salesforce.com'
+	  loginUrl : connectServerUrl
   });
-  // 'hmatsuyamaechimo@uhuru.jp   ';
+  // 'hmatsuyamaechimo@uhuru.jp';
   // 'Salesf0rceNkm4UuwD9UGULsLIeYbqNdA4M';
-  console.log(req.query.username.toString());
-  console.log(req.query.password);
-	var username = req.query.username.toString();
+	var username = req.query.username;
   var password = req.query.password;
-
 	conn.login(username, password, function(err) {
 	  if (!err) {
 	  	console.log('login success');
 
-		var records = [];
-		var sql = " Select id, token__c From EinsteinInfo__c Where recordtype.developername = 'token'";
+      var records = [];
+      var sql = " Select id, token__c From EinsteinInfo__c Where recordtype.developername = 'token'";
 
-		conn.query(sql)
-		  .on("record", function(record) {
-		    records.push(record);
-		  })
-		  .on("end", function(query) {
-		    var token = '';
-		    console.log("total in database : " + query.totalSize);
-		    console.log("total fetched : " + query.totalFetched);
-	        for (var i=0; i<records.length; i++) {
-		        console.log("Token : " + records[i].token__c);
-		        token = records[i].token__c;
-		    }
-		    //return token
-		    res.send(token);
-
-		  })
-		  .run({ autoFetch : true, maxFetch : 4000 });
+      conn.query(sql)
+        .on("record", function(record) {
+          records.push(record);
+        })
+        .on("end", function(query) {
+          var token = '';
+          console.log("total in database : " + query.totalSize);
+          console.log("total fetched : " + query.totalFetched);
+            for (var i=0; i<records.length; i++) {
+              console.log("Token : " + records[i].token__c);
+              token = records[i].token__c;
+          }
+          //return token
+          res.end(token);
+        })
+        .run({ autoFetch : true, maxFetch : 4000 })
 
 	  }else{
-      console.log(err);
+      console.log('err'+err);
+      res.statusCode = 401;
+      res.send('None shall pass');
     }
-	});
+	})
 });
 router.get('/searchGoogle', function(req, res, next) {
   // searchKeyword = req.query.keyword;

@@ -87,8 +87,8 @@ export default () => {
 
     login (state, cSuccess, cError) {
       let api = axios.create()
-      let apiURL = `http://localhost:3000/login?username=${state.username}&password=${state.password}`
-      // let apiURL = `http://13.125.125.39:8000/login?username=${state.username}&password=${state.password}`
+      let apiURL = `http://localhost:3000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
+      // let apiURL = `http://13.125.125.39:8000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
       axios.all(
         [
           api.get(apiURL)

@@ -12,7 +12,9 @@ const state = {
   downloadAjaxText: '',
   imagesLabels: [],
   username:'',
-  password:''
+  password:'',
+  connectServerType: 'Product',
+  accessToken: ''
 }
 
 const getters = {
@@ -57,6 +59,12 @@ const getters = {
   },
   getPassword () {
     return state.password
+  },
+  getConnectServerType () {
+    return state.connectServerType
+  },
+  getAccessToken () {
+    return state.accessToken
   }
 }
 
@@ -136,13 +144,20 @@ const actions = {
         console.log('action / LOGIN_AJAX / success')
         console.log('results= ', results)
         // window.lockToHideLayer = false
-        // commit(M.DOWNLOAD_IMAGES, results)
+        commit(M.CHANGE_ACCESS_TOKEN, results)
       },
       (res) => {
         console.log('action / LOGIN_AJAX / error', res)
+        commit(M.CHANGE_ACCESS_TOKEN, 'fail')
       }
     )
   },
+  [M.CHANGE_CONNECT_SERVER_TYPE] ({ commit }, connectServerType) {
+    commit(M.CHANGE_CONNECT_SERVER_TYPE, connectServerType)
+  },
+  [M.CHANGE_ACCESS_TOKEN] ({ commit }, accessToken) {
+    commit(M.CHANGE_ACCESS_TOKEN, accessToken)
+  }
 
 
 }
@@ -201,6 +216,12 @@ const mutations = {
   },
   [M.CHANGE_PASSWORD] (state, password) {
     state.password = password
+  },
+  [M.CHANGE_CONNECT_SERVER_TYPE] (state, connectServerType) {
+    state.connectServerType = connectServerType
+  },
+  [M.CHANGE_ACCESS_TOKEN] (state, accessToken) {
+    state.accessToken = accessToken
   }
 }
 
