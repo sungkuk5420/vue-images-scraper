@@ -52,7 +52,8 @@ export default () => {
             imagesURL: imagesURL,
             imagesLabels: state.imagesLabels,
             rootDownloadPath: state.rootDownloadPath,
-            searchKeyword: state.searchStr
+            searchKeyword: state.searchStr,
+            mytoken:state.accessToken
           })
         ]
       ).then(

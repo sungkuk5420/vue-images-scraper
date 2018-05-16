@@ -16,7 +16,7 @@ var setIntervalFunc = undefined;
 var FormData = require('form-data');
 var fs = require('fs');
 var sf = require('node-salesforce');
-
+var conn = undefined;
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile(path.join(__dirname, '../vue-masonry-plugin-demo-master/dist/', 'index.html'));
@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
 
 router.get("/login", function(req, res, next){
   var connectServerUrl = req.query.connectServerType === "Product" ? 'https://login.salesforce.com' : 'https://test.salesforce.com';
-	var conn = new sf.Connection({
+	conn = new sf.Connection({
 	  loginUrl : connectServerUrl
   });
   // 'hmatsuyamaechimo@uhuru.jp';
@@ -51,6 +51,8 @@ router.get("/login", function(req, res, next){
               token = records[i].token__c;
           }
           //return token
+
+          
           res.end(token);
         })
         .run({ autoFetch : true, maxFetch : 4000 })
@@ -90,9 +92,11 @@ router.post('/downloadImages', function(req, res, next) {
   rootDownloadPath = __dirname.replace(/\\/gi,"/").replace("routes","")+'downloadImages/';
   rootDiractoryName = req.body.rootDownloadPath;
   imagesLabels = req.body.imagesLabels;
+  var mytoken = req.body.mytoken;
   if (rootDownloadPath.substr(rootDownloadPath.length-1,1) !== '/') {
     rootDownloadPath += '/';
   }  
+  console.log(mytoken)
   async function run() {
     // console.log(rootDownloadPath);
     // console.log(imagesLabels);
@@ -121,9 +125,9 @@ router.post('/downloadImages', function(req, res, next) {
           clearInterval(setIntervalFunc);
           console.log('start file upload zip')
           console.log('file open complete')
-          var mytoken = 'NEWSCXBW2WT3HDOSSYSLNFOXNYNFXR6SUNJ4SRP5FCSCMPHKD3IHFYPV5ZW7HEPSG4E4ZIGW352HRPNXGLM5G5VTLVSZZK33E3YXURI';
+          // var mytoken = 'NEWSCXBW2WT3HDOSSYSLNFOXNYNFXR6SUNJ4SRP5FCSCMPHKD3IHFYPV5ZW7HEPSG4E4ZIGW352HRPNXGLM5G5VTLVSZZK33E3YXURI';
           var url = "https://api.einstein.ai/v2/vision/datasets/upload/sync";
-      
+          console.log(mytoken)
           var request = require('request');
           var headers = {             
               'user-agent': 'curl/7.22.0',
@@ -163,12 +167,32 @@ router.post('/downloadImages', function(req, res, next) {
                 datasetId: `${datasetid}`,
                 name: `${rootDiractoryName}`
               };
-              request.post({headers: headers,url: url, formData: formData}, function(err, httpResponse, body) {
+              request.post({headers: headers,url: trainUrl, formData: formData}, function(err, httpResponse, body) {
                 if (err) {
                   return console.error('upload failed:', err);
                 }
+                
+                var modelId = JSON.parse(body).modelId;
                 console.log(httpResponse.statusCode);
-                console.log('Upload successful!  Server responded with:', body);
+                var objectNm = 'EinsteinInfo__c';
+
+                //set model info
+                var modelinfo = {
+                  datasetId__c : `${datasetid}`,
+                  modelId__c : `${modelId}`,
+                  description__c : `${rootDiractoryName}`
+                };
+                
+                conn.sobject(objectNm).create(modelinfo, function(err, ret) {
+                  if (!err && ret.success) {
+                    console.log('Created record id : ' + ret.id);
+                    res.send('success register :' +ret.id);
+            
+                  }else{
+                    console.log('error : ' + err);
+                  }
+                });
+                console.log('Upload successful22!  Server responded with:', body);
               });
 
             }else{
