@@ -48,7 +48,7 @@
         <div v-show="einsteinInfoId == ''">
           <div data-v-75a60854="" class="form__field"><input data-v-75a60854="" id="category" type="text" name="category" placeholder="Category" required="required"  :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)" class="form__input"></div>
           <div data-v-75a60854="" class="form__field">
-            <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Keyword" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
+            <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Class" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
             <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto;">
               <option value="10">10</option>
               <option value="50">50</option>
@@ -578,6 +578,10 @@ input {
   color:white;
   background-color: #3b4148;
   font-size:16px;
+  border:0;
+}
+.form__field select::focus{
+  outline: -webkit-focus-ring-color auto 0px;
 }
 
 .form__field select option{
@@ -660,7 +664,7 @@ ul.evnSelect li{
   display: inline-block;
   position: relative;
   float: left;
-  width: 140px;
+  width: 139px;
   box-sizing: content-box;
   border-bottom: 1px solid #333;
   padding-left:14px;
