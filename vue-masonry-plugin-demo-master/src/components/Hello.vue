@@ -58,7 +58,7 @@
           <button @click="search()" class="submit" style="width:auto;">Search</button>
         </div>
         <div data-v-75a60854="" class="form__field">
-          <button @click="downloadImages()" class="submit">Create Model</button>
+          <button :class="[accessToken==='' ? 'disableBtn' : (accessToken==='fail' ? 'disableBtn' : '')]" @click="downloadImages($event)" class="submit">Create Model</button>
         </div>
       </div>
     </div>
@@ -200,12 +200,14 @@ export default {
       this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       this.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
     },
-    downloadImages () {
+    downloadImages (event) {
       console.log('click!')
-      window.downloadCompleteCount = 0
-      window.lockToHideLayer = true
-      this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
-      this.$store.dispatch(M.DOWNLOAD_IMAGES)
+      if(!event.target.classList.contains('disableBtn')){
+        window.downloadCompleteCount = 0
+        window.lockToHideLayer = true
+        this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
+        this.$store.dispatch(M.DOWNLOAD_IMAGES)
+      }
     },
     clickTab (tabName, event) {
       if(tabFlag){
@@ -351,7 +353,7 @@ a {
     z-index: 100;
     height: 100%;
     width: 100%;
-    background: black;
+    background-color: black;
     top: 0;
     opacity: 0.8;
     left: 0;
@@ -536,6 +538,12 @@ input {
 .form .submit {
   width: 100%;
 }
+.form__field .disableBtn{
+  cursor: default;
+  background-color:#fff !important;
+  color:#9e9e9e !important;
+  opacity: 0.8;
+}
 
 .form__field .show{
   opacity: 1 !important;
@@ -551,14 +559,14 @@ input {
   width: 100%;
   margin: 0rem 0rem;
   border-radius: 5px;
-  background: #2c3338;
+  background-color: #2c3338;
   color:white;
   background-color: #3b4148;
   font-size:16px;
 }
 
 .form__field select option{
-  background:#2c3338;
+  background-color:#2c3338;
   color:white;
   font-size:16px;
 }
@@ -703,7 +711,7 @@ input[type=radio]:checked ~ .check {
 }
 
 input[type=radio]:checked ~ .check::before{
-  background: #8aab14;
+  background-color: #8aab14;
 }
 
 input[type=radio]:checked ~ label{
