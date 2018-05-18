@@ -7,12 +7,6 @@ var Scraper = require ('images-scraper')
   , bing = new Scraper.Bing()
   , mkdir = require('node-mkdir')
   , zipdir = require('zip-dir');
-var rootDownloadPath = '';
-var rootDiractoryName = '';
-var searchKeyword = '';
-var imagesLabels = [];
-var completeImages = 0;
-var setIntervalFunc = undefined;
 var FormData = require('form-data');
 var fs = require('fs');
 var sf = require('node-salesforce');
@@ -66,8 +60,9 @@ router.get("/login", function(req, res, next){
 });
 router.get('/searchGoogle', function(req, res, next) {
   // searchKeyword = req.query.keyword;
-  rootDiractoryName = req.query.rootDownloadPath;
-  searchKeyword = rootDiractoryName+' '+req.query.keyword;
+  
+  var rootDiractoryName = req.query.rootDownloadPath;
+  var searchKeyword = rootDiractoryName+' '+req.query.keyword;
   google.list({
     keyword: searchKeyword,
     num: req.query.count,
@@ -86,12 +81,111 @@ router.get('/searchGoogle', function(req, res, next) {
 });
 router.post('/downloadImages', function(req, res, next) {
   // console.log(res)
-  var myPromiseLoop = promiseLoop(loopingPromise);
+  var completeImages = 0;
+  var completePlusFunc = function(params) {
+
+    completeImages++;
+    var mytoken = params.mytoken;
+    console.log('images', images.length)
+    console.log('completeImages', completeImages)
+    if( completeImages === images.length){ 
+      console.log('モデル用画像ファイル作成中')
+      io.sockets.emit('Change Layer Text', 'モデル用画像ファイル作成中');
+      zipdir(rootDownloadPath+rootDiractoryName, { saveTo: rootDownloadPath+rootDiractoryName+'.zip' }, function (err, buffer) {
+        io.sockets.emit('Change Layer Text', 'モデル作成中');
+        console.log('zip file created!')
+        clearInterval(setIntervalFunc);
+        console.log('start file upload zip')
+        console.log('file open complete')
+        // var mytoken = 'NEWSCXBW2WT3HDOSSYSLNFOXNYNFXR6SUNJ4SRP5FCSCMPHKD3IHFYPV5ZW7HEPSG4E4ZIGW352HRPNXGLM5G5VTLVSZZK33E3YXURI';
+        var url = "https://api.einstein.ai/v2/vision/datasets/upload/sync";
+        console.log(mytoken)
+        var request = require('request');
+        var headers = {             
+            'user-agent': 'curl/7.22.0',
+            'Authorization': `Bearer ${mytoken}`,
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'multipart/form-data'
+        };
+        
+        console.log(rootDownloadPath+rootDiractoryName+'.zip');
+        
+        var https = require('https');
+        var FormData = require('form-data');
+        var formData = {
+          data: fs.createReadStream(rootDownloadPath+rootDiractoryName+'.zip'),
+          type: 'image'
+        };
+        request.post({headers: headers,url: url, formData: formData}, function(err, httpResponse, body) {
+          if (err) {
+            return console.error('upload failed:', err);
+          }
+          console.log(httpResponse.statusCode);
+          console.log('Upload successful!  Server responded with:', body);
+          if(httpResponse.statusCode === 200){
+            io.sockets.emit('Change Layer Text', 'モデル作成 完了');
+            
+            var datasetid = JSON.parse(body).id;
+            var trainUrl = ' https://api.einstein.ai/v2/vision/train'
+            //　トレーニング
+            var headers = {             
+              'user-agent': 'curl/7.22.0',
+              'Authorization': `Bearer ${mytoken}`,
+              'Cache-Control': 'no-cache',
+              'Content-Type': 'multipart/form-data'
+            };
+            
+            var formData = {
+              datasetId: `${datasetid}`,
+              name: `${rootDiractoryName}`
+            };
+            request.post({headers: headers,url: trainUrl, formData: formData}, function(err, httpResponse, body) {
+              if (err) {
+                return console.error('upload failed:', err);
+              }
+              
+              var modelId = JSON.parse(body).modelId;
+              console.log(httpResponse.statusCode);
+              var objectNm = 'EinsteinInfo__c';
+
+              //set model info
+              var modelinfo = {
+                datasetId__c : `${datasetid}`,
+                modelId__c : `${modelId}`,
+                description__c : `${rootDiractoryName}`
+              };
+              
+              conn.sobject(objectNm).create(modelinfo, function(err, ret) {
+                if (!err && ret.success) {
+                  console.log('Created record id : ' + ret.id);
+                  io.sockets.emit('Inserted SObject', ret.id);
+                  res.send('success register :' +ret.id);
+          
+                }else{
+                  console.log('error : ' + err);
+                }
+              });
+              console.log('Upload successful22!  Server responded with:', body);
+            });
+
+          }else{
+            io.sockets.emit('Change Layer Text', 'モデル作成 失敗');         
+          }
+          setTimeout(() => {
+            io.sockets.emit('Remove Layer');
+          }, 1000);
+        });
+      });
+    }
+  };
+
+  var setIntervalFunc = undefined;
+  var myPromiseLoop = promiseLoop(loopingPromise, completePlusFunc);
   var images = [];
   images = JSON.parse(req.body.imagesURL);
-  rootDownloadPath = __dirname.replace(/\\/gi,"/").replace("routes","")+'downloadImages/';
-  rootDiractoryName = req.body.rootDownloadPath;
-  imagesLabels = req.body.imagesLabels;
+  var rootDownloadPath = __dirname.replace(/\\/gi,"/").replace("routes","")+'downloadImages/';
+  var rootDiractoryName = req.body.rootDownloadPath;
+  var imagesLabels = req.body.imagesLabels;
   var mytoken = req.body.mytoken;
   if (rootDownloadPath.substr(rootDownloadPath.length-1,1) !== '/') {
     rootDownloadPath += '/';
@@ -110,103 +204,11 @@ router.post('/downloadImages', function(req, res, next) {
       myPromiseLoop({
         value: 0,
         images: images[index],
-        subDownloadPathResult: subDownloadPathResult
+        subDownloadPathResult: subDownloadPathResult,
+        completeImages: 0,
+        mytoken: mytoken
       });
-    })
-    setIntervalFunc = setInterval(() => {
-      console.log('images', images.length)
-      console.log('completeImages', completeImages)
-      if( completeImages === images.length){ 
-        console.log('モデル用画像ファイル作成中')
-        io.sockets.emit('Change Layer Text', 'モデル用画像ファイル作成中');
-        zipdir(rootDownloadPath+rootDiractoryName, { saveTo: rootDownloadPath+rootDiractoryName+'.zip' }, function (err, buffer) {
-          io.sockets.emit('Change Layer Text', 'モデル作成中');
-          console.log('zip file created!')
-          clearInterval(setIntervalFunc);
-          console.log('start file upload zip')
-          console.log('file open complete')
-          // var mytoken = 'NEWSCXBW2WT3HDOSSYSLNFOXNYNFXR6SUNJ4SRP5FCSCMPHKD3IHFYPV5ZW7HEPSG4E4ZIGW352HRPNXGLM5G5VTLVSZZK33E3YXURI';
-          var url = "https://api.einstein.ai/v2/vision/datasets/upload/sync";
-          console.log(mytoken)
-          var request = require('request');
-          var headers = {             
-              'user-agent': 'curl/7.22.0',
-              'Authorization': `Bearer ${mytoken}`,
-              'Cache-Control': 'no-cache',
-              'Content-Type': 'multipart/form-data'
-          };
-          
-          console.log(rootDownloadPath+rootDiractoryName+'.zip');
-          
-          var https = require('https');
-          var FormData = require('form-data');
-          var formData = {
-            data: fs.createReadStream(rootDownloadPath+rootDiractoryName+'.zip'),
-            type: 'image'
-          };
-          request.post({headers: headers,url: url, formData: formData}, function(err, httpResponse, body) {
-            if (err) {
-              return console.error('upload failed:', err);
-            }
-            console.log(httpResponse.statusCode);
-            console.log('Upload successful!  Server responded with:', body);
-            if(httpResponse.statusCode === 200){
-              io.sockets.emit('Change Layer Text', 'モデル作成 完了');
-              
-              var datasetid = JSON.parse(body).id;
-              var trainUrl = ' https://api.einstein.ai/v2/vision/train'
-              //　トレーニング
-              var headers = {             
-                'user-agent': 'curl/7.22.0',
-                'Authorization': `Bearer ${mytoken}`,
-                'Cache-Control': 'no-cache',
-                'Content-Type': 'multipart/form-data'
-              };
-              
-              var formData = {
-                datasetId: `${datasetid}`,
-                name: `${rootDiractoryName}`
-              };
-              request.post({headers: headers,url: trainUrl, formData: formData}, function(err, httpResponse, body) {
-                if (err) {
-                  return console.error('upload failed:', err);
-                }
-                
-                var modelId = JSON.parse(body).modelId;
-                console.log(httpResponse.statusCode);
-                var objectNm = 'EinsteinInfo__c';
-
-                //set model info
-                var modelinfo = {
-                  datasetId__c : `${datasetid}`,
-                  modelId__c : `${modelId}`,
-                  description__c : `${rootDiractoryName}`
-                };
-                
-                conn.sobject(objectNm).create(modelinfo, function(err, ret) {
-                  if (!err && ret.success) {
-                    console.log('Created record id : ' + ret.id);
-                    io.sockets.emit('Inserted SObject', ret.id);
-                    res.send('success register :' +ret.id);
-            
-                  }else{
-                    console.log('error : ' + err);
-                  }
-                });
-                console.log('Upload successful22!  Server responded with:', body);
-              });
-
-            }else{
-              io.sockets.emit('Change Layer Text', 'モデル作成 失敗');         
-            }
-            setTimeout(() => {
-              io.sockets.emit('Remove Layer');
-            }, 1000);
-          });
-        });
-      }
-    }, 5000)
-    
+    })  
   }
    
   run();
@@ -215,11 +217,12 @@ router.post('/downloadImages', function(req, res, next) {
 });
 module.exports = router;
 
-
 var loopingPromise = function(params) {
   var value = params.value,
       images = params.images,
-      subDownloadPathResult = params.subDownloadPathResult;
+      subDownloadPathResult = params.subDownloadPathResult,
+      completeImages = params.completeImages,
+      mytoken= params.mytoken;
   // console.log('loopPromiseStart'+subDownloadPathResult)
   return new Promise(function(resolve, reject) {
       console.log(value)
@@ -241,7 +244,9 @@ var loopingPromise = function(params) {
                   resolve({
                     value: ++value,
                     images: images,
-                    subDownloadPathResult: subDownloadPathResult
+                    subDownloadPathResult: subDownloadPathResult,
+                    completeImages: completeImages,
+                    mytoken: mytoken
                   });
               }).catch((err) => {
                   console.log('download error',err)
@@ -251,7 +256,9 @@ var loopingPromise = function(params) {
                   resolve({
                     value: ++value,
                     images: images,
-                    subDownloadPathResult: subDownloadPathResult
+                    subDownloadPathResult: subDownloadPathResult,
+                    completeImages: completeImages,
+                    mytoken: mytoken
                   });
               })
           }else{
@@ -260,14 +267,19 @@ var loopingPromise = function(params) {
               resolve({
                 value: ++value,
                 images: images,
-                subDownloadPathResult: subDownloadPathResult
+                subDownloadPathResult: subDownloadPathResult,
+                completeImages: completeImages,
+                mytoken: mytoken
               });
           }
       } else {
         console.log('reject!')
         completeImages++;
         console.log('completeImages!',completeImages)
-        reject(value < images.length);
+        reject({
+          completeImages: completeImages,
+          mytoken: mytoken
+        });
       }
   });
 };
