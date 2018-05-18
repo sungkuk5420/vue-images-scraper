@@ -8,12 +8,12 @@
 
         <div class="form__field">
           <label for="login__username"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Username</span></label>
-          <input id="login__username" type="text" name="username" class="form__input" placeholder="Username" :value="username" v-on:input="changeUsername($event.target.value)" required>
+          <input style="border-bottom-left-radius: 0;border-top-left-radius: 0;" id="login__username" type="text" name="username" class="form__input" placeholder="Username" :value="username" v-on:input="changeUsername($event.target.value)" required>
         </div>
 
         <div class="form__field">
           <label for="login__password"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span class="hidden">Password</span></label>
-          <input id="login__password" type="password" name="password" class="form__input" placeholder="Password" :value="password" v-on:input="changePassword($event.target.value)" required>
+          <input style="border-bottom-left-radius: 0;border-top-left-radius: 0;" id="login__password" type="password" name="password" class="form__input" placeholder="Password" :value="password" v-on:input="changePassword($event.target.value)" required>
         </div>
         <ul class="evnSelect">
           <li>
@@ -624,8 +624,6 @@ input {
 .login input[type='password'],
 .login input[type='text'] {
   background-color: #3b4148;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
 }
 
 .login input[type='password']:focus,
