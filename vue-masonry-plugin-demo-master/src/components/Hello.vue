@@ -52,7 +52,7 @@
             <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Class" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
             <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto;">
               <!-- <option value="10">10</option> -->
-              <option value="25">25</option>
+              <option value="25" selected="selected">25</option>
               <option value="50">50</option>
               <option value="100">100</option>
               <!-- <option value="200">200</option> -->

@@ -3,7 +3,7 @@ import ajaxActions from './ajaxActions'
 
 const state = {
   searchStr: '',
-  searchCount: 10,
+  searchCount: 25,
   rootDownloadPath: '',
   imagesBlocks: [
   ],
