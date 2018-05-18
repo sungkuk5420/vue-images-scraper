@@ -103,7 +103,7 @@ const actions = {
   [M.DOWNLOAD_IMAGES] ({ commit }) {
     console.log('download images')
     let thisObj = this
-    commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, "download complete : 0 / " + thisObj.getters.getImagesBlocks.length)
+    // commit(M.CHANGE_DOWNLOAD_AJAX_TEXT, "download complete : 0 / " + thisObj.getters.getImagesBlocks.length)
 
     console.log(window.lockToHideLayer)
     ajaxActions().downloadImages(
