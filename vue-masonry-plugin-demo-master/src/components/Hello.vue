@@ -96,8 +96,8 @@
 
 <script>
 
-// var socket = io.connect('http://localhost:3000');
- var socket = io.connect('http://13.125.125.39:8000');
+var socket = io.connect('http://localhost:3000');
+//  var socket = io.connect('http://13.125.125.39:8000');
 
 var timer;
 var tabFlag = false;
@@ -195,6 +195,25 @@ export default {
       thisObj.$store.dispatch(M.CHANGE_EINSTEIN_INFO_ID,einsteinInfoId)
     });
 
+
+    document.addEventListener("keydown",function(e){
+        console.log(e.keyCode)
+
+        switch(e.keyCode) {
+          case 13:
+            console.log("enter");
+            break;
+
+          case 118:
+              thisObj.$store.dispatch(M.CHANGE_USERNAME, 'hmatsuyamaechimo@uhuru.jp');
+              thisObj.$store.dispatch(M.CHANGE_PASSWORD, 'Salesf0rce');
+            break;
+
+          default:
+            console.log("none setting");
+            break;
+        }
+    });
   },
   methods: {
     reDraw () {
