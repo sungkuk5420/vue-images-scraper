@@ -6,7 +6,7 @@
 
       <div class="form login">
 
-        <div class="form__field">
+        <!-- <div class="form__field">
           <label for="login__username"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Username</span></label>
           <input style="border-bottom-left-radius: 0;border-top-left-radius: 0;" id="login__username" type="text" name="username" class="form__input" placeholder="Username" :value="username" v-on:input="changeUsername($event.target.value)" required>
         </div>
@@ -27,7 +27,7 @@
             <label for="s-option" style="background-color: #2c3338;">SandBox</label>
             <div class="check"><div class="inside"></div></div>
           </li>
-        </ul>
+        </ul> -->
         <!-- <div class="form__field">
           <select>
             <option value="product">product</option>
@@ -35,7 +35,7 @@
           </select>
         </div> -->
 
-        <div class="form__field">
+        <!-- <div class="form__field">
           <button @click="login()" class="submit" style="padding-left: 45px;">login
             <span  :class="[accessToken==='' ? 'hide' : (accessToken==='fail' ? 'hide2' : 'show')]"  style=" margin-left: 12px; color: #5dff00; position: relative; top: -1px; font-size: 14px; opacity:0;">✔</span>
             <span  :class="[accessToken==='' ? 'hide2' : (accessToken==='fail' ? 'bgColorRed show' : 'hide2')]"  style=" margin-left: 12px; color: #5dff00; position: relative; top: -1px; font-size: 14px; opacity:0;">X</span>
@@ -44,30 +44,42 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="icons"><symbol id="arrow-right" viewBox="0 0 1792 1792"><path d="M1600 960q0 54-37 91l-651 651q-39 37-91 37-51 0-90-37l-75-75q-38-38-38-91t38-91l293-293H245q-52 0-84.5-37.5T128 1024V896q0-53 32.5-90.5T245 768h704L656 474q-38-36-38-90t38-90l75-75q38-38 90-38 53 0 91 38l651 651q37 35 37 90z"/></symbol><symbol id="lock" viewBox="0 0 1792 1792"><path d="M640 768h512V576q0-106-75-181t-181-75-181 75-75 181v192zm832 96v576q0 40-28 68t-68 28H416q-40 0-68-28t-28-68V864q0-40 28-68t68-28h32V576q0-184 132-316t316-132 316 132 132 316v192h32q40 0 68 28t28 68z"/></symbol><symbol id="user" viewBox="0 0 1792 1792"><path d="M1600 1405q0 120-73 189.5t-194 69.5H459q-121 0-194-69.5T192 1405q0-53 3.5-103.5t14-109T236 1084t43-97.5 62-81 85.5-53.5T538 832q9 0 42 21.5t74.5 48 108 48T896 971t133.5-21.5 108-48 74.5-48 42-21.5q61 0 111.5 20t85.5 53.5 62 81 43 97.5 26.5 108.5 14 109 3.5 103.5zm-320-893q0 159-112.5 271.5T896 896 624.5 783.5 512 512t112.5-271.5T896 128t271.5 112.5T1280 512z"/></symbol></svg>
         <br>
         <div style="background-color: #5e6266; height: 1px;"></div>
-        <br>
+        <br> -->
 
         <div v-show="einsteinInfoId == ''">
-          <div data-v-75a60854="" class="form__field"><input data-v-75a60854="" id="category" type="text" name="category" placeholder="Category" required="required"  :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)" class="form__input"></div>
+          <!-- <div data-v-75a60854="" class="form__field"><input data-v-75a60854="" id="category" type="text" name="category" placeholder="Category" required="required"  :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)" class="form__input"></div> -->
           <div data-v-75a60854="" class="form__field">
-            <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Class" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
+            <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Keyword" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
             <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto;">
               <!-- <option value="10">10</option> -->
-              <option value="25" selected="selected">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
+              <option value="25" selected="selected">25장</option>
+              <option value="50">50장</option>
+              <option value="100">100장</option>
               <!-- <option value="200">200</option> -->
               <!-- <option value="300">300</option> -->
               <!-- <option value="400">400</option> -->
             </select>
             <button @click="search()" class="submit" style="width:auto;">Search</button>
           </div>
-          <div data-v-75a60854="" class="form__field">
-            <button :class="[accessToken==='' ? 'disableBtn' : (accessToken==='fail' ? 'disableBtn' : '')]" @click="downloadImages($event)" class="submit">Create Model</button>
+          <div style="font-size: 30px;">
+            인기 검색어
           </div>
+          <!-- <div data-v-75a60854="" class="form__field"> -->
+            <!-- <button :class="[accessToken==='' ? 'disableBtn' : (accessToken==='fail' ? 'disableBtn' : '')]" @click="downloadImages($event)" class="submit">Create Model</button> -->
+          <!-- </div> -->
         </div>
       </div>
     </div>
 
+
+    <div class="search-keywords">
+      <ul class="simple-tabs">
+        <li v-for="(item, index) in searchKeywords" v-bind:key="index">
+          <span>{{item.text}}</span>
+          <span>{{item.count}}</span>
+        </li>
+      </ul>
+    </div>
     <div v-show="einsteinInfoId != ''" class="whiteText">
       <h1>モデル作成 完了</h1>
       <h3>Salesforce SObject Id :</h3>
@@ -111,7 +123,8 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
+      searchKeywords: []
     }
   },
   computed: {
@@ -214,6 +227,36 @@ export default {
             break;
         }
     });
+
+    window.DATABASE = firebase.database();
+    console.log(DATABASE);
+    window.DATABASE.ref('/keywords').on('value', function (data) {
+      var database = data.val();
+      window.DB_DATA = Object.keys(database).map(function(data) {
+          return database[data];
+      });
+      window.DB_DATA_IDS = Object.keys(database).map(function(data) {
+          return {
+              id : data,
+              text :database[data].text,
+              count :database[data].count
+          };
+      });
+      console.log(window.DB_DATA);
+      function compare(a,b) {
+        if (a.count < b.count)
+          return 1;
+        if (a.count > b.count)
+          return -1;
+        return 0;
+      }
+
+      window.DB_DATA.sort(compare);
+      thisObj.searchKeywords = window.DB_DATA.slice(0,10);
+      console.log(thisObj.searchKeywords);
+    });
+
+
   },
   methods: {
     reDraw () {
@@ -231,7 +274,24 @@ export default {
       this.rootDownloadPath = rootDownloadPath
     },
     search () {
+      var thisObj = this
       console.log('click!')
+      var hasKeyword = window.DB_DATA_IDS.filter((item)=>{
+        console.log(item);
+        return item.text == thisObj.searchStr
+      });
+      if(hasKeyword.length != 0){
+        console.log(parseInt(hasKeyword[0].count))
+        window.DATABASE.ref('keywords/'+hasKeyword[0].id).set({
+            text:thisObj.searchStr,
+            count: parseInt(hasKeyword[0].count)+1
+        });
+      }else{
+        window.DATABASE.ref('keywords/').push({
+            text:thisObj.searchStr,
+            count:1
+        })
+      }
       window.lockToHideLayer = true
       this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       this.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
@@ -326,6 +386,46 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.search-keywords{
+    margin-top: 20px;
+  .simple-tabs{
+    display: table;
+    width: 800px;
+    margin: auto;
+    margin-bottom: -2px;
+    border-collapse: collapse;
+    li{
+      border: 2px solid #ddd;
+      flex: auto;
+      width: 200px;
+      margin: 0;
+      display: table-cell;
+      background-color: #50AC58;
+      padding: 2px 0px;
+      color:white;
+      max-width: 200px;
+      word-break: break-all;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      &:hover{
+        background-color:#50AC58;
+        cursor: pointer;
+      }
+
+      &.active{
+        background-color:#50AC58;
+      }
+
+      span{
+        display: block;
+        width: 100%;
+        font-weight: 500;
+        font-size: 18px;
+      }
+    }
+  }
+}
 
 h1, h2 {
   font-weight: normal;
@@ -342,10 +442,10 @@ li {
 }
 
 a {
-  color: #42b983;
+  color: #50AC58;
 }
 .imageDiv {
-  border: 2px solid #ac0;
+  border: 2px solid #50AC58;
   width:200px;
   display: table-cell;
   position: relative;
@@ -411,7 +511,7 @@ a {
     height: 28px;
     width: 28px;
     animation: rotate 0.8s infinite linear;
-    border: 8px solid #41b883;
+    border: 8px solid #50AC58;
     border-right-color: transparent;
     border-radius: 50%;
     margin: auto;
@@ -439,16 +539,16 @@ a {
     width: 200px;
     margin: 0;
     display: table-cell;
-    background-color: #6a7731;
+    background-color: #50AC58;
     padding: 10px 0px;
     color:white;
     &:hover{
-      background-color:#8aab14;
+      background-color:#50AC58;
       cursor: pointer;
     }
 
     &.active{
-      background-color:#9fc125;
+      background-color:#50AC58;
     }
 
     span{
@@ -653,7 +753,7 @@ input {
 }
 
 .login .submit {
-  background-color: #8aab14;
+  background-color: #50AC58;
   color: #eee;
   font-weight: 700;
   text-transform: uppercase;
@@ -661,7 +761,7 @@ input {
 
 .login .submit:focus,
 .login .submit:hover {
-  background-color: #9fc125;
+  background-color: #50AC58;
 }
 
 /* modules/text.css */

@@ -3,8 +3,8 @@ export default () => {
   return {
     searchGoogle (state, cSuccess, cError) {
       let api = axios.create()
-      // let apiURL = `http://localhost:3000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}&rootDownloadPath=${state.rootDownloadPath}`
-      let apiURL = `http://13.125.125.39:8000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}&rootDownloadPath=${state.rootDownloadPath}`
+      let apiURL = `http://localhost:3000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
+      // let apiURL = `http://13.125.125.39:5000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
       axios.all(
         [
           api.get(apiURL)
@@ -45,7 +45,7 @@ export default () => {
       console.log(imagesURL)
       // return false
       // let apiURL = `http://localhost:3000/downloadImages`
-      let apiURL = `http://13.125.125.39:8000/downloadImages`
+      let apiURL = `http://13.125.125.39:5000/downloadImages`
       axios.all(
         [
           api.post(apiURL, {
@@ -89,7 +89,7 @@ export default () => {
     login (state, cSuccess, cError) {
       let api = axios.create()
       // let apiURL = `http://localhost:3000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
-      let apiURL = `http://13.125.125.39:8000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
+      let apiURL = `http://13.125.125.39:5000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
       axios.all(
         [
           api.get(apiURL)

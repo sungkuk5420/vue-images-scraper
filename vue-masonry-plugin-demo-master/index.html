@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>echimo-vision</title>
+    <title>image-scraper</title>
     <link rel='stylesheet' href='./static/selectables.css' type='text/css' />
   </head>
   <body>
@@ -11,5 +11,18 @@
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script async defer src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.0.0/masonry.pkgd.min.js"></script>
     <script async defer src="./static/selectables.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAelvPyd1OH2axLZz5dKzaFEC-Cl0R__sc",
+        authDomain: "image-scraper-5ae3b.firebaseapp.com",
+        databaseURL: "https://image-scraper-5ae3b.firebaseio.com",
+        projectId: "image-scraper-5ae3b",
+        storageBucket: "",
+        messagingSenderId: "554309658133"
+      };
+      firebase.initializeApp(config);
+    </script>
   </body>
 </html>
