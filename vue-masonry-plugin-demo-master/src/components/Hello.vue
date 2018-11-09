@@ -108,8 +108,8 @@
 
 <script>
 
-var socket = io.connect('http://localhost:3000');
-//  var socket = io.connect('http://13.125.125.39:8000');
+// var socket = io.connect('http://localhost:3000');
+ var socket = io.connect('http://13.125.125.39:5000');
 
 var timer;
 var tabFlag = false;
