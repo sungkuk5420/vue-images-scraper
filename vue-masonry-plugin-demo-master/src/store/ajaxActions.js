@@ -3,8 +3,8 @@ export default () => {
   return {
     searchGoogle (state, cSuccess, cError) {
       let api = axios.create()
-      let apiURL = `http://localhost:3000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
-      // let apiURL = `http://13.125.125.39:5000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
+      // let apiURL = `http://localhost:3000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
+      let apiURL = `http://13.125.125.39:5000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
       axios.all(
         [
           api.get(apiURL)

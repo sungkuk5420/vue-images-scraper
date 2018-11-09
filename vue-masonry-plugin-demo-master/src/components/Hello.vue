@@ -74,7 +74,7 @@
 
     <div class="search-keywords">
       <ul class="simple-tabs">
-        <li v-for="(item, index) in searchKeywords" v-bind:key="index">
+        <li v-for="(item, index) in searchKeywords" v-bind:key="index" @click="searchThisKeyword(item.text)">
           <span>{{item.text}}</span>
           <span>{{item.count}}</span>
         </li>
@@ -197,7 +197,7 @@ export default {
       thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, "画像ファイル圧縮中（"+ window.downloadCompleteCount + " / " + totalImagesCount+"）")
     });
     socket.on('Change Layer Text',function(text){
-      console.log('Change Layer Text@@@@@@@@@@@@')
+      // //console.log('Change Layer Text@@@@@@@@@@@@')
       thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, text)
     });
     socket.on('Remove Layer',function(){
@@ -210,11 +210,11 @@ export default {
 
 
     document.addEventListener("keydown",function(e){
-        console.log(e.keyCode)
+        // //console.log(e.keyCode)
 
         switch(e.keyCode) {
           case 13:
-            console.log("enter");
+            // //console.log("enter");
             break;
 
           case 118:
@@ -223,13 +223,13 @@ export default {
             break;
 
           default:
-            console.log("none setting");
+            // //console.log("none setting");
             break;
         }
     });
 
     window.DATABASE = firebase.database();
-    console.log(DATABASE);
+    // //console.log(DATABASE);
     window.DATABASE.ref('/keywords').on('value', function (data) {
       var database = data.val();
       window.DB_DATA = Object.keys(database).map(function(data) {
@@ -242,7 +242,7 @@ export default {
               count :database[data].count
           };
       });
-      console.log(window.DB_DATA);
+      //console.log(window.DB_DATA);
       function compare(a,b) {
         if (a.count < b.count)
           return 1;
@@ -253,7 +253,7 @@ export default {
 
       window.DB_DATA.sort(compare);
       thisObj.searchKeywords = window.DB_DATA.slice(0,10);
-      console.log(thisObj.searchKeywords);
+      //console.log(thisObj.searchKeywords);
     });
 
 
@@ -275,13 +275,13 @@ export default {
     },
     search () {
       var thisObj = this
-      console.log('click!')
+      //console.log('click!')
       var hasKeyword = window.DB_DATA_IDS.filter((item)=>{
-        console.log(item);
+        //console.log(item);
         return item.text == thisObj.searchStr
       });
       if(hasKeyword.length != 0){
-        console.log(parseInt(hasKeyword[0].count))
+        //console.log(parseInt(hasKeyword[0].count))
         window.DATABASE.ref('keywords/'+hasKeyword[0].id).set({
             text:thisObj.searchStr,
             count: parseInt(hasKeyword[0].count)+1
@@ -297,7 +297,7 @@ export default {
       this.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
     },
     downloadImages (event) {
-      console.log('click!')
+      //console.log('click!')
       if(!event.target.classList.contains('disableBtn')){
         window.downloadCompleteCount = 0
         window.lockToHideLayer = true
@@ -339,17 +339,23 @@ export default {
     changeConnectServerType (connectServerType) {
       this.$store.dispatch(M.CHANGE_CONNECT_SERVER_TYPE, connectServerType)
     },
+    searchThisKeyword (text) {
+      console.log(text);
+      this.searchStr = text;
+      this.search();
+
+    }
 
   },
   updated(){
-    console.log('update')
+    //console.log('update')
     var thisObj = this;
     if (timer) {
       clearTimeout(timer);
     }
     timer = setTimeout(function() {
       if(thisObj.loadingIconFlag){
-        console.log('call')
+        //console.log('call')
         thisObj.reDraw();
         if(window.lockToHideLayer === false){
           new Selectables({
@@ -366,7 +372,7 @@ export default {
               // el.querySelector('input').removeAttribute('checked');
             }
           });
-          console.log('xxx')
+          //console.log('xxx')
           thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
           // var images = document.getElementsByClassName("imageDiv")
           // for(var i = 0, len = images.length; i < len ; i++){
@@ -409,7 +415,7 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       &:hover{
-        background-color:#50AC58;
+        background-color:#479a4e;
         cursor: pointer;
       }
 
@@ -543,7 +549,7 @@ a {
     padding: 10px 0px;
     color:white;
     &:hover{
-      background-color:#50AC58;
+      background-color:#479a4e;
       cursor: pointer;
     }
 
@@ -761,7 +767,7 @@ input {
 
 .login .submit:focus,
 .login .submit:hover {
-  background-color: #50AC58;
+  background-color: #479a4e;
 }
 
 /* modules/text.css */
