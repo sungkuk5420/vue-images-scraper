@@ -11,7 +11,7 @@
     "cors": "^2.8.4",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
-    "electron": "^2.0.0",
+    "electron": "^2.0.13",
     "express": "~4.15.5",
     "form-data": "^2.3.2",
     "image-downloader": "^3.3.0",
@@ -19,10 +19,12 @@
     "morgan": "~1.9.0",
     "node-mkdir": "^1.0.0",
     "node-salesforce": "^0.8.0",
+    "npm": "^6.4.0",
     "promise-loop": "^1.0.1",
     "raw-body": "^2.3.2",
     "serve-favicon": "~2.4.5",
     "socket.io": "^1.4.5",
+    "xvfb": "^0.2.3",
     "zip-dir": "^1.0.2"
   }
 }
