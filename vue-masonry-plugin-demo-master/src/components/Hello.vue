@@ -109,7 +109,7 @@
 <script>
 
 // var socket = io.connect('http://localhost:3000');
- var socket = io.connect('http://13.125.125.39:5000');
+ var socket = io.connect('http://ec2-54-85-58-222.compute-1.amazonaws.com:8000');
 
 var timer;
 var tabFlag = false;
