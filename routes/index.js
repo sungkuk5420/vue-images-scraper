@@ -63,6 +63,7 @@ router.get('/searchGoogle', function(req, res, next) {
 
   // var rootDiractoryName = req.query.rootDownloadPath;
   var searchKeyword = req.query.keyword;
+  // var socketId = req.query.socketId;
   google.list({
     keyword: searchKeyword,
     num: req.query.count,

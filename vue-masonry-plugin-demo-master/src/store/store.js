@@ -15,7 +15,8 @@ const state = {
   password:'',
   connectServerType: 'Product',
   accessToken: '',
-  einsteinInfoId: ''
+  einsteinInfoId: '',
+  socketId: ''
 }
 
 const getters = {
@@ -69,6 +70,9 @@ const getters = {
   },
   getEinsteinInfoId () {
     return state.einsteinInfoId
+  },
+  getSocketId () {
+    return state.socketId
   }
 }
 
@@ -164,6 +168,9 @@ const actions = {
   },
   [M.CHANGE_EINSTEIN_INFO_ID] ({ commit }, einsteinInfoId) {
     commit(M.CHANGE_EINSTEIN_INFO_ID, einsteinInfoId)
+  },
+  [M.SAVE_SOCKET_ID] ({ commit }, socketId) {
+    commit(M.SAVE_SOCKET_ID, socketId)
   }
 
 
@@ -232,6 +239,9 @@ const mutations = {
   },
   [M.CHANGE_EINSTEIN_INFO_ID] (state, einsteinInfoId) {
     state.einsteinInfoId = einsteinInfoId
+  },
+  [M.SAVE_SOCKET_ID] (state, socketId) {
+    state.socketId = socketId
   }
 }
 

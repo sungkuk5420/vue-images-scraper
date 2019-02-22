@@ -66,13 +66,13 @@ var httpServer =http.createServer(app).listen(8000, function(req,res){
   console.log('Socket IO server has been started 8000!');
 });
 // upgrade http server to socket.io server
-io = require('socket.io').listen(httpServer);
+// io = require('socket.io').listen(httpServer);
 
-io.sockets.on('connection',function(socket){
-  socket.emit('test',{msg:'Welcome !'});
-  //socket.on('fromclient',function(data){
-  //  socket.broadcast.emit('toclient',data); // 자신을 제외하고 다른 클라이언트에게 보냄
-  //  socket.emit('toclient',data); // 해당 클라이언트에게만 보냄. 다른 클라이언트에 보낼려면?
-  //  console.log('Message from client :'+data.msg);
-  //})
-});
+// io.sockets.on('connection',function(socket){
+//   socket.emit('test',{msg:'Welcome !'});
+//   //socket.on('fromclient',function(data){
+//   //  socket.broadcast.emit('toclient',data); // 자신을 제외하고 다른 클라이언트에게 보냄
+//   //  socket.emit('toclient',data); // 해당 클라이언트에게만 보냄. 다른 클라이언트에 보낼려면?
+//   //  console.log('Message from client :'+data.msg);
+//   //})
+// });

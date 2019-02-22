@@ -107,10 +107,6 @@
 </template>
 
 <script>
-
-// var socket = io.connect('http://localhost:3000');
- var socket = io.connect('http://ec2-54-85-58-222.compute-1.amazonaws.com:8000');
-
 var timer;
 var tabFlag = false;
 import Vue from 'vue'
@@ -184,6 +180,13 @@ export default {
     var thisObj = this
     window.lockToHideLayer = false
     window.downloadCompleteCount = 0
+    // var socket = io.connect('http://localhost:3000');
+    // var socket = io.connect('http://ec2-54-85-58-222.compute-1.amazonaws.com:8000');
+    // var sessionid = undefined;
+    // socket.on('connect', function(aa) {
+    //   sessionid = socket.id;
+    //   thisObj.$store.dispatch(M.SAVE_SOCKET_ID, sessionid)
+    // });
 
     socket.on('Download Complete',function(data){
       var totalImagesCount = 0
@@ -255,7 +258,6 @@ export default {
       thisObj.searchKeywords = window.DB_DATA.slice(0,10);
       //console.log(thisObj.searchKeywords);
     });
-
 
   },
   methods: {
