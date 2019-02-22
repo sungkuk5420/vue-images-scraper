@@ -188,28 +188,28 @@ export default {
     //   thisObj.$store.dispatch(M.SAVE_SOCKET_ID, sessionid)
     // });
 
-    socket.on('Download Complete',function(data){
-      var totalImagesCount = 0
-      for(var i = 0, len = thisObj.allImagesBlocks.length ; i < len ; i++){
-        var currentImages = thisObj.allImagesBlocks[i].filter((image) => {
-          return image.checked == 'checked'
-        })
-        totalImagesCount += currentImages.length;
-      }
-      window.downloadCompleteCount++;
-      thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, "画像ファイル圧縮中（"+ window.downloadCompleteCount + " / " + totalImagesCount+"）")
-    });
-    socket.on('Change Layer Text',function(text){
-      // //console.log('Change Layer Text@@@@@@@@@@@@')
-      thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, text)
-    });
-    socket.on('Remove Layer',function(){
-      window.lockToHideLayer = false
-      thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
-    });
-    socket.on('Inserted SObject',function(einsteinInfoId){
-      thisObj.$store.dispatch(M.CHANGE_EINSTEIN_INFO_ID,einsteinInfoId)
-    });
+    // socket.on('Download Complete',function(data){
+    //   var totalImagesCount = 0
+    //   for(var i = 0, len = thisObj.allImagesBlocks.length ; i < len ; i++){
+    //     var currentImages = thisObj.allImagesBlocks[i].filter((image) => {
+    //       return image.checked == 'checked'
+    //     })
+    //     totalImagesCount += currentImages.length;
+    //   }
+    //   window.downloadCompleteCount++;
+    //   thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, "画像ファイル圧縮中（"+ window.downloadCompleteCount + " / " + totalImagesCount+"）")
+    // });
+    // socket.on('Change Layer Text',function(text){
+    //   // //console.log('Change Layer Text@@@@@@@@@@@@')
+    //   thisObj.$store.dispatch(M.CHANGE_DOWNLOAD_AJAX_TEXT, text)
+    // });
+    // socket.on('Remove Layer',function(){
+    //   window.lockToHideLayer = false
+    //   thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
+    // });
+    // socket.on('Inserted SObject',function(einsteinInfoId){
+    //   thisObj.$store.dispatch(M.CHANGE_EINSTEIN_INFO_ID,einsteinInfoId)
+    // });
 
 
     document.addEventListener("keydown",function(e){
