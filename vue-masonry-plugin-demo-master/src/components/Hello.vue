@@ -93,7 +93,7 @@
     </ul>
     <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
       <div v-masonry-tile class="imageDiv " v-bind:key="index" v-for="(item, index) in imagesBlocks" >
-        <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]">
+        <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]" >
           <img v-bind:src="item.thumb_url || item.thumb" class="image">
           <input type="checkbox" class="checkbox" :checked="item.checked"/>
         </a>
@@ -103,6 +103,20 @@
       <div class="layerText">{{downloadAjaxText}}</div>
       <div class="spinner"></div>
     </div>
+    <tiny-slider
+    v-if="imagesBlocks"
+    :autoplayButton="true"
+    :touch="true"
+    :autoplay-timeout="2000"
+    :mouse-drag="true"
+    :loop="false"
+    :auto-height="true"
+    items="1"
+    gutter="20">
+        <div v-bind:key="index" v-for="(item, index) in imagesBlocks" >
+          <img v-bind:src="item.thumb_url || item.thumb" class="image">
+        </div>
+    </tiny-slider>
   </div>
 </template>
 
@@ -113,6 +127,7 @@ import Vue from 'vue'
 import { M } from '../store/types'
 import { mapGetters } from 'vuex'
 import {VueMasonryPlugin} from 'vue-masonry';
+import VueTinySlider from 'vue-tiny-slider';
 
 Vue.use(VueMasonryPlugin)
 export default {
@@ -120,8 +135,12 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      searchKeywords: []
+      searchKeywords: [],
+      imagePopupFlag: false
     }
+  },
+  components: {
+    'tiny-slider': VueTinySlider
   },
   computed: {
     searchStr: {
@@ -345,7 +364,18 @@ export default {
       console.log(text);
       this.searchStr = text;
       this.search();
-
+    },
+    clickImage(url){
+      console.log(url);
+      this.imagePopupFlag = !this.imagePopupFlag;
+      console.log(this.imagePopupFlag);
+      if(this.imagePopupFlag){
+        document.body.style.overflow = "hidden";
+        document.querySelector('.tns-outer').classList.add('show');
+      }else{
+        document.body.style.overflow = "auto";
+        document.querySelector('.tns-outer').classList.remove('show');
+      }
     }
 
   },
@@ -366,12 +396,12 @@ export default {
             moreUsing: 'shiftKey',
             zone: '#masonry-container',
             onSelect: function (el) {
-              thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
-              // el.querySelector('input').setAttribute('checked', 'checked');
+              thisObj.clickImage(el);
+              // thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
             },
             onDeselect: function (el) {
-              thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
-              // el.querySelector('input').removeAttribute('checked');
+              thisObj.clickImage(el);
+              // thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
             }
           });
           //console.log('xxx')
@@ -462,11 +492,12 @@ a {
   .image{
     width:100%;
     height: 100%;
-    opacity: 0.5;
+    // opacity: 0.5;
 
   }
 
   .checkbox{
+    display:none;
     position: absolute;
     width: 20px;
     height: 20px;
@@ -877,5 +908,47 @@ input[type=radio]:checked ~ label{
 .whiteText h3{
   margin-top: 3px;
   margin-bottom: 0;
+}
+.tns-outer{
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  background: red;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: -1;
+}
+.tns-outer.show{
+  opacity: 1 !important;
+  z-index: 1 !important;
+}
+.tns-outer div{
+  height:100% !important;
+}
+.tns-outer .tns-controls,
+.tns-outer img{
+  height:auto !important;
+}
+
+.tns-outer img{
+  width:100% !important;
+}
+.tns-slider{
+  display:table;
+}
+.tns-item {
+  font-size: 3rem;
+  font-family: Arial;
+  text-align: center;
+  padding: 2em;
+  background:#fafafb;
+  width:100%;
+  padding: 0 !important;
+  display:table-cell !important;
+    vertical-align: middle !important;
+}
+.tns-item:nth-child(odd) {
+  background: #c8e1ff;
 }
 </style>

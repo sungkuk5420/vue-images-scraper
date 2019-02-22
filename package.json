@@ -23,6 +23,7 @@
     "raw-body": "^2.3.2",
     "serve-favicon": "~2.4.5",
     "socket.io": "^1.4.5",
+    "vue-tiny-slider": "^0.1.32",
     "zip-dir": "^1.0.2"
   }
 }
