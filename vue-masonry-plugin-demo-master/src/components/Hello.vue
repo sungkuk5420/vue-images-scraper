@@ -199,8 +199,8 @@ export default {
     var thisObj = this
     window.lockToHideLayer = false
     window.downloadCompleteCount = 0
-    // var socket = io.connect('http://localhost:3000');
-    // var socket = io.connect('http://ec2-54-85-58-222.compute-1.amazonaws.com:8000');
+    // var socket = io.connect('http://localhost:8000');
+    // var socket = io.connect('http://54.64.84.165.compute-1.amazonaws.com:8000');
     // var sessionid = undefined;
     // socket.on('connect', function(aa) {
     //   sessionid = socket.id;
