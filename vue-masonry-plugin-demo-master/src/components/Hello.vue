@@ -94,7 +94,7 @@
     <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
       <div v-masonry-tile class="imageDiv " v-bind:key="index" v-for="(item, index) in imagesBlocks" >
         <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]" >
-          <img v-bind:src="item.thumb_url || item.thumb" class="image">
+          <img v-bind:src="item.url || item.thumb" class="image" @click="()=>{clickImage(index)}">
           <input type="checkbox" class="checkbox" :checked="item.checked"/>
         </a>
       </div>
@@ -103,20 +103,9 @@
       <div class="layerText">{{downloadAjaxText}}</div>
       <div class="spinner"></div>
     </div>
-    <tiny-slider
-    v-if="imagesBlocks"
-    :autoplayButton="true"
-    :touch="true"
-    :autoplay-timeout="2000"
-    :mouse-drag="true"
-    :loop="false"
-    :auto-height="true"
-    items="1"
-    gutter="20">
-        <div v-bind:key="index" v-for="(item, index) in imagesBlocks" >
-          <img v-bind:src="item.thumb_url || item.thumb" class="image">
-        </div>
-    </tiny-slider>
+    <!-- :intervalVal=3000 -->
+    <vue-image-slider v-if="imagesBlocks" v-show="imagePopupFlag" :images="imagesBlocks.map(i=>i.url)" :imageIndex="imageIndex" :intervalVal="3000"   class="vue-image-slider"  />
+    <div class="vue-image-slider-close" v-show="imagePopupFlag" @click="clickImage">X</div>
   </div>
 </template>
 
@@ -127,7 +116,7 @@ import Vue from 'vue'
 import { M } from '../store/types'
 import { mapGetters } from 'vuex'
 import {VueMasonryPlugin} from 'vue-masonry';
-import VueTinySlider from 'vue-tiny-slider';
+import VueImageSlider from '../components/VueImageSlider.vue'
 
 Vue.use(VueMasonryPlugin)
 export default {
@@ -136,11 +125,12 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       searchKeywords: [],
-      imagePopupFlag: false
+      imagePopupFlag: false,
+      imageIndex: 0
     }
   },
   components: {
-    'tiny-slider': VueTinySlider
+    VueImageSlider
   },
   computed: {
     searchStr: {
@@ -251,7 +241,7 @@ export default {
     });
 
     window.DATABASE = firebase.database();
-    // //console.log(DATABASE);
+    console.log(DATABASE);
     window.DATABASE.ref('/keywords').on('value', function (data) {
       var database = data.val();
       window.DB_DATA = Object.keys(database).map(function(data) {
@@ -365,19 +355,17 @@ export default {
       this.searchStr = text;
       this.search();
     },
-    clickImage(url){
-      console.log(url);
+    clickImage(index){
+      console.log(index);
+      this.imageIndex = index;
       this.imagePopupFlag = !this.imagePopupFlag;
       console.log(this.imagePopupFlag);
       if(this.imagePopupFlag){
         document.body.style.overflow = "hidden";
-        document.querySelector('.tns-outer').classList.add('show');
       }else{
         document.body.style.overflow = "auto";
-        document.querySelector('.tns-outer').classList.remove('show');
       }
-    }
-
+    },
   },
   updated(){
     //console.log('update')
@@ -390,20 +378,20 @@ export default {
         //console.log('call')
         thisObj.reDraw();
         if(window.lockToHideLayer === false){
-          new Selectables({
-            elements: 'a',
-            selectedClass: 'active',
-            moreUsing: 'shiftKey',
-            zone: '#masonry-container',
-            onSelect: function (el) {
-              thisObj.clickImage(el);
-              // thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
-            },
-            onDeselect: function (el) {
-              thisObj.clickImage(el);
-              // thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
-            }
-          });
+          // new Selectables({
+          //   elements: 'a',
+          //   selectedClass: 'active',
+          //   moreUsing: 'shiftKey',
+          //   zone: '#masonry-container',
+          //   onSelect: function (el) {
+          //     thisObj.clickImage(el);
+          //     // thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
+          //   },
+          //   onDeselect: function (el) {
+          //     thisObj.clickImage(el);
+          //     // thisObj.$store.dispatch(M.CHANGE_IMAGE_CHECK, el.dataset.index)
+          //   }
+          // });
           //console.log('xxx')
           thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
           // var images = document.getElementsByClassName("imageDiv")
@@ -909,46 +897,34 @@ input[type=radio]:checked ~ label{
   margin-top: 3px;
   margin-bottom: 0;
 }
-.tns-outer{
-  height: 100%;
-  position: fixed;
-  width: 100%;
-  background: red;
+.vue-image-slider{
+  background: #ddd;
+  width: 100%!important;
+  height: 100%!important;
+  position: fixed !important;
   top: 0;
   left: 0;
-  opacity: 0;
-  z-index: -1;
 }
-.tns-outer.show{
-  opacity: 1 !important;
-  z-index: 1 !important;
-}
-.tns-outer div{
-  height:100% !important;
-}
-.tns-outer .tns-controls,
-.tns-outer img{
-  height:auto !important;
+.vue-image-slider > div,
+.vue-image-slider > div > div{
+  width: 100%!important;
+  height: 100%!important;
 }
 
-.tns-outer img{
-  width:100% !important;
+.vue-image-slider > div > div img{
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
-.tns-slider{
-  display:table;
-}
-.tns-item {
-  font-size: 3rem;
-  font-family: Arial;
-  text-align: center;
-  padding: 2em;
-  background:#fafafb;
-  width:100%;
-  padding: 0 !important;
-  display:table-cell !important;
-    vertical-align: middle !important;
-}
-.tns-item:nth-child(odd) {
-  background: #c8e1ff;
+.vue-image-slider-close{
+  position: fixed;
+  top: 50px;
+  right: 50px;
+  background: #a0a0a0;
+  color: white;
+  padding: 7px 15px;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>

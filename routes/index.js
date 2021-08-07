@@ -3,8 +3,8 @@ var router = express.Router();
 var Scraper = require ('images-scraper')
   , download = require('image-downloader')
   , promiseLoop = require('promise-loop')
-  , google = new Scraper.Google()
-  , bing = new Scraper.Bing()
+  // , google = new Scraper.Google()
+  // , bing = new Scraper.Bing()
   , mkdir = require('node-mkdir')
   , zipdir = require('zip-dir');
 var FormData = require('form-data');
@@ -64,15 +64,52 @@ router.get('/searchGoogle', function(req, res, next) {
   // var rootDiractoryName = req.query.rootDownloadPath;
   var searchKeyword = req.query.keyword;
   // var socketId = req.query.socketId;
+  console.log(searchKeyword)
+  console.log(req.query.count)
+  var options = {
+    userAgent: 'Mozilla/5.0 (X11; Linux i686; rv:64.0) Gecko/20100101 Firefox/64.0', // the user agent
+    puppeteer: {
+      headless: false
+    }, // puppeteer options, for example, { headless: false }
+    tbs: {  // every possible tbs search option, some examples and more info: http://jwebnet.net/advancedgooglesearch.html
+      // isz:  // options: l(arge), m(edium), i(cons), etc.
+      itp:"photo",  // options: clipart, face, lineart, news, photo
+      // ic:   // options: color, gray, trans
+      // sur:  // options: fmc (commercial reuse with modification), fc (commercial reuse), fm (noncommercial reuse with modification), f (noncommercial reuse)
+    },
+    safe: false   // enable/disable safe search
+  };
+  const google = new Scraper(
+    options
+  );
+  
+  (async () => {
+    const searchedImages = await google.scrape(searchKeyword, req.query.count);
+    console.log('searchedImages', searchedImages);
+      const images = searchedImages;
+      res.end(JSON.stringify(images));
+      // downloadImages(images)
+  })();
+
+});
+router.get('/searchGoogle2', function(req, res, next) {
+  // searchKeyword = req.query.keyword;
+
+  // var rootDiractoryName = req.query.rootDownloadPath;
+  var searchKeyword = req.query.keyword;
+  // var socketId = req.query.socketId;
+  console.log(searchKeyword)
+  console.log(req.query.count)
   google.list({
     keyword: searchKeyword,
     num: req.query.count,
     detail: true,
     nightmare: {
-        show: false
+        show: true
     }
   })
   .then(function (searchImages) {
+    console.log(searchImages)
     images = searchImages;
     res.end(JSON.stringify(searchImages));
     // downloadImages(images)
