@@ -50,7 +50,7 @@
           <!-- <div data-v-75a60854="" class="form__field"><input data-v-75a60854="" id="category" type="text" name="category" placeholder="Category" required="required"  :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)" class="form__input"></div> -->
           <div data-v-75a60854="" class="form__field">
             <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Keyword" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
-            <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto;">
+            <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto; width:0px; ">
               <!-- <option value="10">10</option> -->
               <option value="25" selected="selected">25장</option>
               <option value="50">50장</option>
@@ -93,8 +93,8 @@
     </ul>
     <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
       <div v-masonry-tile class="imageDiv " v-bind:key="index" v-for="(item, index) in imagesBlocks" >
-        <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]" >
-          <img v-bind:src="item.url || item.thumb" class="image" @click="()=>{clickImage(index)}">
+        <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]" v-show="item.loaded" >
+          <img v-bind:src="item.url || item.thumb" class="image" @click="()=>{clickImage(index)}" :onerror="imgError(item)">
           <input type="checkbox" class="checkbox" :checked="item.checked"/>
         </a>
       </div>
@@ -124,6 +124,7 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
+      localImagesBlocks: [],
       searchKeywords: [],
       imagePopupFlag: false,
       imageIndex: 0
@@ -185,6 +186,12 @@ export default {
       einsteinInfoId: 'getEinsteinInfoId'
     })
   },
+  watch:{
+    imagesBlocks(value){
+      console.log("watch!!!!!!!!!!!!!!!!!!")
+      this.localImagesBlocks = value;
+    }
+  },
   mounted: function(){
     var thisObj = this
     window.lockToHideLayer = false
@@ -221,24 +228,24 @@ export default {
     // });
 
 
-    document.addEventListener("keydown",function(e){
-        // //console.log(e.keyCode)
+    // document.addEventListener("keydown",function(e){
+    //     // //console.log(e.keyCode)
 
-        switch(e.keyCode) {
-          case 13:
-            // //console.log("enter");
-            break;
+    //     switch(e.keyCode) {
+    //       case 13:
+    //         // //console.log("enter");
+    //         break;
 
-          case 118:
-              thisObj.$store.dispatch(M.CHANGE_USERNAME, 'hmatsuyamaechimo@uhuru.jp');
-              thisObj.$store.dispatch(M.CHANGE_PASSWORD, 'Salesf0rce');
-            break;
+    //       case 118:
+    //           thisObj.$store.dispatch(M.CHANGE_USERNAME, 'hmatsuyamaechimo@uhuru.jp');
+    //           thisObj.$store.dispatch(M.CHANGE_PASSWORD, 'Salesf0rce');
+    //         break;
 
-          default:
-            // //console.log("none setting");
-            break;
-        }
-    });
+    //       default:
+    //         // //console.log("none setting");
+    //         break;
+    //     }
+    // });
 
     window.DATABASE = firebase.database();
     console.log(DATABASE);
@@ -270,6 +277,19 @@ export default {
 
   },
   methods: {
+    imgError(item){
+      const img = new Image()
+      const thisObj = this;
+      
+      img.onerror=(data)=>{
+        if(!data.target.width){
+          thisObj.$store.dispatch(M.IMAGE_LOAD_FAIL,item.index)
+          // thisObj.localImagesBlocks =  thisObj.$store.getters.getImagesBlocks;
+          // console.log(thisObj.$store.getters.getImagesBlocks.map(i=>i.loaded))
+        }
+      };
+      img.src=item.url;
+    },
     reDraw () {
       this.$redrawVueMasonry({
         horizontalOrder: false

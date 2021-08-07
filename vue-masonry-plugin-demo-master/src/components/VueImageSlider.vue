@@ -23,6 +23,8 @@ export default {
         imageIndex(value){
             console.log("changed imageIndex")
             this.currentIndex = value;
+			clearInterval(this.timer);
+			this.timer = setInterval(this.next, this.intervalVal);
         }
     },
 	props: {

@@ -39,7 +39,12 @@ const getters = {
       }
       index++
     })
-    return state.imagesBlocks[showIndex]
+    let returnArr = state.imagesBlocks[showIndex];
+    if(returnArr){
+      console.log(returnArr.map(i=>i.loaded))
+      returnArr = returnArr.filter(i=>i.loaded !== false)
+    }
+    return returnArr
   },
   getAllImagesBlocks () {
     return state.imagesBlocks
@@ -103,6 +108,9 @@ const actions = {
         console.log('action / SEARCH_IMAGES_FROM_GOOGLE / error', res)
       }
     )
+  },
+  [M.IMAGE_LOAD_FAIL] ({ commit },index) {
+    commit(M.IMAGE_LOAD_FAIL, index)
   },
   [M.DOWNLOAD_IMAGES] ({ commit }) {
     console.log('download images')
@@ -186,9 +194,27 @@ const mutations = {
   [M.CHANGE_DOWNLOAD_PATH] (state, rootDownloadPath) {
     state.rootDownloadPath = rootDownloadPath
   },
+  [M.IMAGE_LOAD_FAIL] (state, imageIndex) {
+    console.log("IMAGE_LOAD_FAIL mutation : ", imageIndex)
+    var showIndex = -1
+    var index = 0
+    state.imagesLabels.forEach(item => {
+      if(item[state.showTabName] != undefined){
+        showIndex = index
+        console.log('show tab : '+state.showTabName)
+      }
+      index++
+    })
+    // console.log(state.imagesBlocks[showIndex][index])
+    // state.imagesBlocks[showIndex][index].loaded = false;
+    state.imagesBlocks[showIndex].filter(i=>i.index == imageIndex)[0].loaded = false;
+  },
   [M.SEARCH_IMAGES_FROM_GOOGLE] (state, results) {
+    var index = 0;
     state.imagesBlocks.push(results.map((item) => {
+      index++;
       return {
+        index: index,
         height: item.height,
         thumb_height: item.thumb_height,
         thumb_url: item.thumb_url,
@@ -196,6 +222,7 @@ const mutations = {
         type: item.type,
         url: item.url,
         width: item.width,
+        loaded: true,
         checked: 'checked'
       }
     }))
