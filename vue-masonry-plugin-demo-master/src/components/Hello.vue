@@ -435,17 +435,16 @@ export default {
 .search-keywords{
     margin-top: 20px;
   .simple-tabs{
-    display: table;
-    width: 800px;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 800px;
     margin: auto;
     margin-bottom: -2px;
     border-collapse: collapse;
     li{
       border: 2px solid #ddd;
       flex: auto;
-      width: 200px;
       margin: 0;
-      display: table-cell;
       background-color: #50AC58;
       padding: 2px 0px;
       color:white;
@@ -492,7 +491,7 @@ a {
 }
 .imageDiv {
   border: 2px solid #50AC58;
-  width:200px;
+  width:50%;
   display: table-cell;
   position: relative;
   box-sizing: border-box;
@@ -513,8 +512,8 @@ a {
 }
 
 .masonry-container {
-    min-width: 800px;
-    width:800px;
+    max-width:800px;
+    width: 100%;
     margin: 0 auto;
     display:table;
     border-collapse: collapse;
@@ -575,17 +574,16 @@ a {
 }
 
 .simple-tabs{
-  display: table;
-  width: 800px;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 800px;
   margin: auto;
   margin-bottom: -2px;
   border-collapse: collapse;
   li{
     border: 2px solid #ddd;
     flex: auto;
-    width: 200px;
     margin: 0;
-    display: table-cell;
     background-color: #50AC58;
     padding: 10px 0px;
     color:white;
