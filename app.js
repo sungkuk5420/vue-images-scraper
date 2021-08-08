@@ -62,8 +62,8 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-var httpServer =http.createServer(app).listen(8000, function(req,res){
-  console.log('Socket IO server has been started 8000!');
+var httpServer =http.createServer(app).listen(5000, function(req,res){
+  console.log('Socket IO server has been started 5000!');
 });
 // upgrade http server to socket.io server
 // io = require('socket.io').listen(httpServer);

@@ -3,9 +3,9 @@ export default () => {
   return {
     searchGoogle(state, cSuccess, cError) {
       let api = axios.create()
-      // let apiURL = `http://localhost:8000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
-      let apiURL = `http://localhost:8000/searchGoogle?keyword=${state.searchStr}&count=200`
-      // let apiURL = `http://54.64.84.165:8000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}&socketId=${state.socketId}`
+      // let apiURL = `http://localhost:5000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
+      // let apiURL = `http://localhost:5000/searchGoogle?keyword=${state.searchStr}&count=200`
+      let apiURL = `https://vue-image-scrapper.herokuapp.com/searchGoogle?keyword=${state.searchStr}&count=200`;
       axios.all(
         [
           api.get(apiURL)
@@ -42,8 +42,8 @@ export default () => {
       let imagesURL = JSON.stringify(state.imagesBlocks)
       console.log(imagesURL)
       // return false
-      let apiURL = `http://localhost:8000/downloadImages`
-      // let apiURL = `http://54.64.84.165.compute-1.amazonaws.com:8000/downloadImages`
+      let apiURL = `http://localhost:5000/downloadImages`
+      // let apiURL = `http://54.64.84.165.compute-1.amazonaws.com:5000/downloadImages`
       axios.all(
         [
           api.post(apiURL, {
@@ -83,8 +83,8 @@ export default () => {
 
     login(state, cSuccess, cError) {
       let api = axios.create()
-      let apiURL = `http://localhost:8000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
-      // let apiURL = `http://54.64.84.165.compute-1.amazonaws.com:8000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
+      let apiURL = `http://localhost:5000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
+      // let apiURL = `http://54.64.84.165.compute-1.amazonaws.com:5000/login?username=${state.username}&password=${state.password}&connectServerType=${state.connectServerType}`
       axios.all(
         [
           api.get(apiURL)
