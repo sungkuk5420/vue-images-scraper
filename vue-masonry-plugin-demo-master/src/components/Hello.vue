@@ -324,6 +324,7 @@ export default {
         })
       }
 
+      thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
       window.DATABASE.ref(`/${thisObj.searchStr}`).on('value', function (data) {
         var database = data.val();
         console.log( database)
@@ -334,7 +335,6 @@ export default {
           thisObj.$store.dispatch(M.LOAD_IMAGES_FROM_FIREBASE,currentImageDatas[0])
         }else{
           window.lockToHideLayer = true
-          thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
           thisObj.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
         }
       });
