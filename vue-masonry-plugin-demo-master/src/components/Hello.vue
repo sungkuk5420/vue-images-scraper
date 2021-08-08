@@ -92,7 +92,7 @@
       <li class=""  v-bind:key="index" v-for="(item, index) in imagesLabels"><span @click="clickTab(key, $event)" v-bind:key="key" v-for="(value, key) in item">{{key}}</span></li>
     </ul>
     <div v-masonry transition-duration="1s" item-selector=".imageDiv" class="masonry-container" id="masonry-container">
-      <div v-masonry-tile class="imageDiv " v-bind:key="index" v-for="(item, index) in imagesBlocks" >
+      <div v-masonry-tile class="imageDiv " v-bind:key="index" v-for="(item, index) in localImagesBlocks" >
         <a style="display: flex;" :class="[item.checked==='checked' ? 'active' : '']" :data-index="[index]" v-show="item.loaded" >
           <img v-bind:src="item.url || item.thumb" class="image" @click="()=>{clickImage(index)}" :onerror="imgError(item)">
           <input type="checkbox" class="checkbox" :checked="item.checked"/>
@@ -104,7 +104,7 @@
       <div class="spinner"></div>
     </div>
     <!-- :intervalVal=3000 -->
-    <vue-image-slider v-if="imagesBlocks" v-show="imagePopupFlag" :images="imagesBlocks.map(i=>i.url)" :imageIndex="imageIndex" :intervalVal="3000"   class="vue-image-slider"  />
+    <vue-image-slider v-if="localImagesBlocks" v-show="imagePopupFlag" :images="localImagesBlocks.map(i=>i.url)" :imageIndex="imageIndex" :intervalVal="3000"   class="vue-image-slider"  />
     <div class="vue-image-slider-close" v-show="imagePopupFlag" @click="clickImage">X</div>
   </div>
 </template>
@@ -323,9 +323,22 @@ export default {
             count:1
         })
       }
-      window.lockToHideLayer = true
-      this.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
-      this.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
+
+      thisObj.$store.dispatch(M.CHANGE_LOADING_ICON_FLAG)
+      window.DATABASE.ref(`/${thisObj.searchStr}`).on('value', function (data) {
+        var database = data.val();
+        console.log( database)
+        if(database){
+          const currentImageDatas = Object.keys(database).map(function(data) {
+              return database[data];
+          });
+          thisObj.$store.dispatch(M.LOAD_IMAGES_FROM_FIREBASE,currentImageDatas[0])
+        }else{
+          window.lockToHideLayer = true
+          thisObj.$store.dispatch(M.SEARCH_IMAGES_FROM_GOOGLE)
+        }
+      });
+
     },
     downloadImages (event) {
       //console.log('click!')

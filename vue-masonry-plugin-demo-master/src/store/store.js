@@ -91,6 +91,10 @@ const actions = {
   [M.CHANGE_DOWNLOAD_PATH] ({ commit }, rootDownloadPath) {
     commit(M.CHANGE_DOWNLOAD_PATH, rootDownloadPath)
   },
+  [M.LOAD_IMAGES_FROM_FIREBASE] ({ commit },images) {
+    commit(M.CHANGE_SHOW_TAB_NAME, this.getters.getSearchStr)
+    commit(M.LOAD_IMAGES_FROM_FIREBASE, images)
+  },
   [M.SEARCH_IMAGES_FROM_GOOGLE] ({ commit }) {
     console.log('search images')
     let thisObj = this
@@ -210,6 +214,28 @@ const mutations = {
     state.imagesBlocks[showIndex].filter(i=>i.index == imageIndex)[0].loaded = false;
   },
   [M.SEARCH_IMAGES_FROM_GOOGLE] (state, results) {
+    var index = 0;
+    window.DATABASE.ref(`${state.searchStr}`).push(results)
+    state.imagesBlocks.push(results.map((item) => {
+      index++;
+      return {
+        index: index,
+        height: item.height,
+        thumb_height: item.thumb_height,
+        thumb_url: item.thumb_url,
+        thumb_width: item.thumb_width,
+        type: item.type,
+        url: item.url,
+        width: item.width,
+        loaded: true,
+        checked: 'checked'
+      }
+    }))
+    var obj = {};
+    obj[state.searchStr] = state.imagesBlocks.length - 1;
+    state.imagesLabels.push(obj)
+  },
+  [M.LOAD_IMAGES_FROM_FIREBASE] (state, results) {
     var index = 0;
     state.imagesBlocks.push(results.map((item) => {
       index++;
