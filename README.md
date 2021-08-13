@@ -1,4 +1,4 @@
-# something-old
+# vue-images-scraper
 
 AI 모델 학습을 위한 이미지 스크랩 웹사이트입니다. 
 
