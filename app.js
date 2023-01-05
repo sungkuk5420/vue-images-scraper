@@ -62,7 +62,9 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-var httpServer =http.createServer(app).listen(5000, function(req,res){
+const PORT = process.env.PORT || 4000;
+
+var httpServer =http.createServer(app).listen(PORT, function(req,res){
   console.log('Socket IO server has been started 5000!');
 });
 // upgrade http server to socket.io server
