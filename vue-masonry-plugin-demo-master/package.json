@@ -14,7 +14,7 @@
     "axios": "^0.21.1",
     "vue": "^2.3.3",
     "vue-image-slider": "^1.0.2",
-    "vue-masonry": "^0.10.11",
+    "vue-masonry": "^0.16.0",
     "vue-router": "^3.0.1",
     "vue-tiny-slider": "^0.1.39",
     "vuex": "^3.0.1"
@@ -54,7 +54,7 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.3.3",
     "webpack": "^2.6.1",
-    "webpack-bundle-analyzer": "^2.2.1",
+    "webpack-bundle-analyzer": "^4.7.0",
     "webpack-dev-middleware": "^1.10.0",
     "webpack-hot-middleware": "^2.18.0",
     "webpack-merge": "^4.1.0"
