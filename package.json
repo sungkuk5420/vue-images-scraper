@@ -28,7 +28,7 @@
   },
   "proxy": {
     "/searchGoogle": {
-      "target": "http://localhost:5000/searchGoogle"
+      "target": "http://localhost:4000/searchGoogle"
     }
   },
   "engines": {
