@@ -5,8 +5,8 @@ export default () => {
       let api = axios.create()
       // let apiURL = `http://localhost:5000/searchGoogle?keyword=${state.searchStr}&count=${state.searchCount}`
       // let apiURL = `http://localhost:5000/searchGoogle?keyword=${state.searchStr}&count=200`
-      // let apiURL = `https://vue-image-scrapper.herokuapp.com/searchGoogle?keyword=${state.searchStr}&count=200`;
-      let apiURL = `http://localhost:4000/searchGoogle?keyword=${state.searchStr}&count=50`
+      let apiURL = `https://vue-image-scrapper.herokuapp.com/searchGoogle?keyword=${state.searchStr}&count=200`;
+      // let apiURL = `http://localhost:4000/searchGoogle?keyword=${state.searchStr}&count=200`
       axios.all(
         [
           api.get(apiURL)
