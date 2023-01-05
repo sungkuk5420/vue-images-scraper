@@ -12,10 +12,10 @@ var fs = require('fs');
 var sf = require('node-salesforce');
 var conn = undefined;
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  console.log()
-  res.sendFile(__dirname.replace("routes","")+"vue-masonry-plugin-demo-master/dist/index.html");
-});
+// router.get('/', function(req, res, next) {
+//   console.log()
+//   res.sendFile(__dirname.replace("routes","")+"vue-masonry-plugin-demo-master/dist/index.html");
+// });
 
 router.get("/login", function(req, res, next){
   var connectServerUrl = req.query.connectServerType === "Product" ? 'https://login.salesforce.com' : 'https://test.salesforce.com';
@@ -59,7 +59,7 @@ router.get("/login", function(req, res, next){
     }
 	})
 });
-router.get('/searchGoogle', function(req, res, next) {
+router.get('/', function(req, res, next) {
   // searchKeyword = req.query.keyword;
 
   // var rootDiractoryName = req.query.rootDownloadPath;
