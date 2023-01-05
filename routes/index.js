@@ -3,7 +3,7 @@ var router = express.Router();
 var Scraper = require ('images-scraper')
   , download = require('image-downloader')
   , promiseLoop = require('promise-loop')
-  // , google = new Scraper.Google()
+  // , google = new Scraper.Google()s
   // , bing = new Scraper.Bing()
   , mkdir = require('node-mkdir')
   , zipdir = require('zip-dir');
@@ -13,7 +13,8 @@ var sf = require('node-salesforce');
 var conn = undefined;
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.sendFile(path.join(__dirname, '../vue-masonry-plugin-demo-master/dist/', 'index.html'));
+  console.log()
+  res.sendFile(__dirname.replace("routes","")+"vue-masonry-plugin-demo-master/dist/index.html");
 });
 
 router.get("/login", function(req, res, next){

@@ -65,7 +65,7 @@ module.exports = app;
 const PORT = process.env.PORT || 4000;
 
 var httpServer =http.createServer(app).listen(PORT, function(req,res){
-  console.log('Socket IO server has been started 5000!');
+  console.log('Socket IO server has been started '+PORT);
 });
 // upgrade http server to socket.io server
 // io = require('socket.io').listen(httpServer);
