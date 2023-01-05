@@ -11,8 +11,12 @@ var http = require('http');
 
 var app = express();
 var cors = require('cors')
-
-app.use(cors())
+app.use(
+  cors({
+    credentials: true,
+    origin: "*",
+  })
+);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
