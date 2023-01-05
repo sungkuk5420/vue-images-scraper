@@ -4,7 +4,7 @@ AI 모델 학습을 위한 이미지 스크랩 웹사이트입니다.
 
 ## Demo / 데모
 
-[라이브 데모 보기](https://vue-image-scrapper.herokuapp.com/)
+[라이브 데모 보기](https://vue-images-screapper.netlify.app/)
 
 ## heroku 베포시 빌드팩
 ```
