@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "form-data": "^2.3.2",
     "image-downloader": "^4.0.3",
-    "images-scraper": "^6.4.2",
+    "images-scraper": "^6.3.0",
     "morgan": "~1.9.0",
     "node-mkdir": "^1.0.0",
     "node-salesforce": "^0.8.0",

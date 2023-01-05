@@ -6,6 +6,11 @@ AI 모델 학습을 위한 이미지 스크랩 웹사이트입니다.
 
 [라이브 데모 보기](https://vue-image-scrapper.herokuapp.com/)
 
+## heroku 베포시 빌드팩
+```
+jontewks/puppeteer
+```
+
 ## Getting Started / 어떻게 시작하나요?
 
 ### Installing / 설치

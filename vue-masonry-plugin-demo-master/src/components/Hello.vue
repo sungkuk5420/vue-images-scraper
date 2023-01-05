@@ -2,74 +2,25 @@
   <div id="app" class="hello">
     <!-- <h1>{{ msg }}</h1> -->
 
-    <div class="grid">
+    <!-- <div class="grid">
 
       <div class="form login">
-
-        <!-- <div class="form__field">
-          <label for="login__username"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Username</span></label>
-          <input style="border-bottom-left-radius: 0;border-top-left-radius: 0;" id="login__username" type="text" name="username" class="form__input" placeholder="Username" :value="username" v-on:input="changeUsername($event.target.value)" required>
-        </div>
-
-        <div class="form__field">
-          <label for="login__password"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span class="hidden">Password</span></label>
-          <input style="border-bottom-left-radius: 0;border-top-left-radius: 0;" id="login__password" type="password" name="password" class="form__input" placeholder="Password" :value="password" v-on:input="changePassword($event.target.value)" required>
-        </div>
-        <ul class="evnSelect">
-          <li>
-            <input type="radio" id="f-option" name="selector" :checked="connectServerType==='Product'" v-on:click="changeConnectServerType('Product')">
-            <label for="f-option" style="background-color: #2c3338;">Product</label>
-            <div class="check"></div>
-          </li>
-
-          <li>
-            <input type="radio" id="s-option" name="selector" :checked="connectServerType==='SandBox'" value="SandBox" v-on:click="changeConnectServerType('SandBox')">
-            <label for="s-option" style="background-color: #2c3338;">SandBox</label>
-            <div class="check"><div class="inside"></div></div>
-          </li>
-        </ul> -->
-        <!-- <div class="form__field">
-          <select>
-            <option value="product">product</option>
-            <option value="sandbox">sandbox</option>
-          </select>
-        </div> -->
-
-        <!-- <div class="form__field">
-          <button @click="login()" class="submit" style="padding-left: 45px;">login
-            <span  :class="[accessToken==='' ? 'hide' : (accessToken==='fail' ? 'hide2' : 'show')]"  style=" margin-left: 12px; color: #5dff00; position: relative; top: -1px; font-size: 14px; opacity:0;">✔</span>
-            <span  :class="[accessToken==='' ? 'hide2' : (accessToken==='fail' ? 'bgColorRed show' : 'hide2')]"  style=" margin-left: 12px; color: #5dff00; position: relative; top: -1px; font-size: 14px; opacity:0;">X</span>
-          </button>
-        </div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="icons"><symbol id="arrow-right" viewBox="0 0 1792 1792"><path d="M1600 960q0 54-37 91l-651 651q-39 37-91 37-51 0-90-37l-75-75q-38-38-38-91t38-91l293-293H245q-52 0-84.5-37.5T128 1024V896q0-53 32.5-90.5T245 768h704L656 474q-38-36-38-90t38-90l75-75q38-38 90-38 53 0 91 38l651 651q37 35 37 90z"/></symbol><symbol id="lock" viewBox="0 0 1792 1792"><path d="M640 768h512V576q0-106-75-181t-181-75-181 75-75 181v192zm832 96v576q0 40-28 68t-68 28H416q-40 0-68-28t-28-68V864q0-40 28-68t68-28h32V576q0-184 132-316t316-132 316 132 132 316v192h32q40 0 68 28t28 68z"/></symbol><symbol id="user" viewBox="0 0 1792 1792"><path d="M1600 1405q0 120-73 189.5t-194 69.5H459q-121 0-194-69.5T192 1405q0-53 3.5-103.5t14-109T236 1084t43-97.5 62-81 85.5-53.5T538 832q9 0 42 21.5t74.5 48 108 48T896 971t133.5-21.5 108-48 74.5-48 42-21.5q61 0 111.5 20t85.5 53.5 62 81 43 97.5 26.5 108.5 14 109 3.5 103.5zm-320-893q0 159-112.5 271.5T896 896 624.5 783.5 512 512t112.5-271.5T896 128t271.5 112.5T1280 512z"/></symbol></svg>
-        <br>
-        <div style="background-color: #5e6266; height: 1px;"></div>
-        <br> -->
-
         <div v-show="einsteinInfoId == ''">
-          <!-- <div data-v-75a60854="" class="form__field"><input data-v-75a60854="" id="category" type="text" name="category" placeholder="Category" required="required"  :value="rootDownloadPath" v-on:input="changerootDownloadPath($event.target.value)" class="form__input"></div> -->
           <div data-v-75a60854="" class="form__field">
             <input data-v-75a60854="" id="Keyword" type="text" name="Keyword" placeholder="Keyword" required="required"  :value="searchStr" v-on:input="changeSearchStr($event.target.value)" class="form__input">
             <select :value="searchCount" v-on:input="changeSearchCount($event.target.value)" style="margin:0px 10px; top: 0px; position: relative; width:auto; width:0px; ">
-              <!-- <option value="10">10</option> -->
               <option value="25" selected="selected">25장</option>
               <option value="50">50장</option>
               <option value="100">100장</option>
-              <!-- <option value="200">200</option> -->
-              <!-- <option value="300">300</option> -->
-              <!-- <option value="400">400</option> -->
             </select>
             <button @click="search()" class="submit" style="width:auto;">Search</button>
           </div>
           <div style="font-size: 30px;">
             인기 검색어
           </div>
-          <!-- <div data-v-75a60854="" class="form__field"> -->
-            <!-- <button :class="[accessToken==='' ? 'disableBtn' : (accessToken==='fail' ? 'disableBtn' : '')]" @click="downloadImages($event)" class="submit">Create Model</button> -->
-          <!-- </div> -->
         </div>
       </div>
-    </div>
+    </div> -->
 
 
     <div class="search-keywords">
